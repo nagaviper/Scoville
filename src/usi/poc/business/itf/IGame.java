@@ -5,7 +5,7 @@ public interface IGame {
 
 	public boolean createUser(User user);
 	
-	public void createGame(AdminGame game);
+	public void createGame(String xmlParameters);
 	
 	public void login(LoginInformation loginInformation);
 	

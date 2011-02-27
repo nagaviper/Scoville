@@ -42,10 +42,10 @@ public class GameImpl implements IGame {
 
 	
 	@Override
-	public void createGame(AdminGame game) {
+	public void createGame(String xmlParameters) {
 		System.out.println("GameImpl.createGame()");
 		System.out.println("Not yet implemented...");
-		System.out.println(game);
+		System.out.println(xmlParameters);
 	}
 
 	
