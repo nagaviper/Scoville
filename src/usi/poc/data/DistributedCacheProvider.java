@@ -19,9 +19,10 @@ public class DistributedCacheProvider {
 	@SuppressWarnings("rawtypes")
 	private Map<String, Region> regions = new HashMap<String, Region>();;
 
+	@SuppressWarnings("unchecked")
 	public <K, V> Region<K, V> createReplicatedCache(String name, CacheListenerAdapter<K,V> listener) {
 		if ( regions.containsKey(name) ) {
-			// TODO : throw exception !
+			return regions.get(name);
 		}
 		Region<K, V> region = cache.<K, V>createRegionFactory(RegionShortcut.REPLICATE)
 		.addCacheListener(listener)
@@ -31,8 +32,27 @@ public class DistributedCacheProvider {
 	}
 
 	@SuppressWarnings("unchecked")
+	public <K, V> Region<K, V> createReplicatedCache(String name) {
+		if ( regions.containsKey(name) ) {
+			return regions.get(name);
+		}
+		Region<K, V> region = cache.<K, V>createRegionFactory(RegionShortcut.REPLICATE).create(name);
+		regions.put(name, region);
+		return region;
+	}
+
+	@SuppressWarnings("unchecked")
 	public <K, V> Region<K, V> getCache(String name) {
 		return regions.get(name);
+	}
+
+	public <K, V> V getCacheAsUniqueObject(String name) {
+		@SuppressWarnings("unchecked")
+		Region<K, V> r = regions.get(name);
+		if ( r.size() != 1 ) {
+			// TODO - throw exception
+		}
+		return r.get(0);
 	}
 
 }
