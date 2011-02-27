@@ -1,7 +1,5 @@
 package usi.poc.business.impl;
 
-import java.util.Map;
-
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -19,24 +17,35 @@ import usi.poc.business.itf.Question;
 import usi.poc.business.itf.User;
 import usi.poc.business.itf.UserRanking;
 import usi.poc.business.itf.UserRankingList;
+import usi.poc.data.IUserDAO;
 
 @Service
 public class GameImpl implements IGame {
-
-	@Resource	
-	private Map<String, User> usersCache;
+	
+	@Resource
+	private IUserDAO userDao;
 	
 	public GameImpl() {
 		
+	}
+	
+	@Override
+	public User getUser(String key) {
+		return (User)userDao.get(key);
+	}
+	
+	@Override
+	public boolean existsUser(String sessionId) {
+		return userDao.existUser(sessionId);
 	}
 
 	@Override
 	public boolean createUser(User user) {
 		String key = user.getMail();
-		if ( usersCache.containsKey(key) ) {
+		if (userDao.contains(key))
 			return false;
-		}
-		usersCache.put(user.getMail(), user);
+
+		userDao.put(user.getMail(), user);
 		return true;
 	}
 
@@ -118,7 +127,5 @@ public class GameImpl implements IGame {
 		System.out.println("Not yet implemented...");
 		return new AdminUserAnswer();
 	}
-	
-
 }
 

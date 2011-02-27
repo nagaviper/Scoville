@@ -2,7 +2,7 @@ package usi.poc.business.itf;
 
 import java.io.Serializable;
 
-public class User implements Serializable {
+public class User implements Serializable, IQuizzObject {
 	
 	private static final long serialVersionUID = 3884899046258970447L;
 
@@ -58,7 +58,7 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return "User [mail=" + mail + ", firstname=" + firstname
+		return "User [id=" + id + ", mail=" + mail + ", firstname=" + firstname
 				+ ", lastname=" + lastname + ", password=" + password + "]";
 	}
 

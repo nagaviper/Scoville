@@ -48,7 +48,9 @@
 		<constructor-arg index="0" value="users" />
 		<constructor-arg index="1" ref="usersCacheListener" />
 	</bean>
-
+	
+	<!-- DAO -->
+	<bean id="userDAO" class="usi.poc.data.GemUserDAO" />
 
 
 </beans>
