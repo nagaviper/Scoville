@@ -3,7 +3,7 @@ package usi.poc.business.itf;
 
 public interface IGame {
 
-	public void createUser(User user);
+	public boolean createUser(User user);
 	
 	public void createGame(AdminGame game);
 	

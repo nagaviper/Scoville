@@ -36,6 +36,9 @@ public class RESTController {
 		this.game = game;
 	}
 
+	public RESTController() {
+
+	}
 
 	@RequestMapping(value="/user", method=RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)

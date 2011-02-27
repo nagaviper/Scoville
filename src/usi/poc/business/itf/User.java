@@ -1,6 +1,10 @@
 package usi.poc.business.itf;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
+	
+	private static final long serialVersionUID = 3884899046258970447L;
 	
 	private String mail;
 	private String firstname;
