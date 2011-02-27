@@ -1,11 +1,29 @@
 package usi.poc.business.itf;
 
+import usi.poc.business.impl.game.mapping.Sessiontype;
+
 
 public interface IGame {
 
+	/**
+	 * User creation
+	 * @param user
+	 * @return true if user had been created, false if it already exists
+	 */
 	public boolean createUser(User user);
 	
-	public void createGame(String xmlParameters);
+	/**
+	 * Game creation
+	 * @param xmlParameters xml string matching gamesession.xsd schema
+	 * @return true if game had been created, false if it already exists
+	 */
+	public boolean createGame(String xmlParameters);
+	
+	/**
+	 * Get the game
+	 * @return the game reference if it exists, null otherwise
+	 */
+	public Sessiontype getGame();
 	
 	public void login(LoginInformation loginInformation);
 	

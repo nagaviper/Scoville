@@ -1,12 +1,17 @@
 package usi.poc.business.impl;
 
+import java.io.StringReader;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 import org.springframework.stereotype.Service;
 
-import usi.poc.business.itf.AdminGame;
+import usi.poc.business.impl.game.mapping.Sessiontype;
 import usi.poc.business.itf.AdminUserAnswer;
 import usi.poc.business.itf.AdminUserAnswers;
 import usi.poc.business.itf.AdminUserRanking;
@@ -25,6 +30,20 @@ public class GameImpl implements IGame {
 
 	@Resource	
 	private Map<String, User> usersCache;
+
+	@Resource	
+	private Map<String, Sessiontype> gameCache;
+	
+	private static Unmarshaller gameUnmarshaller;
+	
+	static {
+		try {
+			gameUnmarshaller = JAXBContext.newInstance(Sessiontype.class.getPackage().getName()).createUnmarshaller();
+		} catch (JAXBException e) {
+			// TODO - Very big problem !!!
+			e.printStackTrace();
+		}
+	}
 	
 	public GameImpl() {
 		
@@ -39,13 +58,29 @@ public class GameImpl implements IGame {
 		usersCache.put(user.getMail(), user);
 		return true;
 	}
-
 	
 	@Override
-	public void createGame(String xmlParameters) {
+	public Sessiontype getGame() {
+		return gameCache.get(0);
+	}
+	
+	@Override
+	public boolean createGame(String xmlParameters) {
 		System.out.println("GameImpl.createGame()");
-		System.out.println("Not yet implemented...");
-		System.out.println(xmlParameters);
+		if ( gameCache.size() == 1 ) {
+			return false;
+		}
+		try {
+			@SuppressWarnings("unchecked")
+			JAXBElement<Sessiontype> doc = (JAXBElement<Sessiontype>) gameUnmarshaller.unmarshal(new StringReader(xmlParameters));
+			Sessiontype s = doc.getValue();
+			gameCache.put("game", s);
+		}
+		catch (JAXBException e) {
+			// TODO - Very big problem !!!
+			e.printStackTrace();
+		}
+		return true;
 	}
 
 	
@@ -117,7 +152,7 @@ public class GameImpl implements IGame {
 		System.out.println("Not yet implemented...");
 		return new AdminUserAnswer();
 	}
-	
+
 
 }
 
