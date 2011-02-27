@@ -55,15 +55,18 @@ POST ()
 
 #
 # $1 - nb users to create
+# $2 - base url
+# $3 - start Id
 #
 TestCreateUsers()
 {
     date
-	numero=0
-	limite=$1
-    while test $numero < $limite ; do 
+	URL=$2/api/user
+	numero=$3
+	limite=$(($1 + $3))
+    while [ $numero -lt $limite ] ; do 
 	    #echo $numero
-	    POST $CAPSAICINE_URL_BASE/api/user '{ "firstname" : "gui", "lastname" : "gia", "mail" : "gui@gia'$numero'", "password" : "pass" }' > create.log
+	    POST $URL '{ "firstname" : "gui", "lastname" : "gia", "mail" : "gui@gia'$numero'", "password" : "pass" }' > create.log
 	    numero=$(($numero + 1))
     done
 	date
@@ -105,5 +108,16 @@ GET $CAPSAICINE_URL_BASE/api/audit '{ "user_mail" : "gui@gia", "authentication_k
 # User answer (Admin)
 
 GET $CAPSAICINE_URL_BASE/api/audit/4 '{ "user_mail" : "gui@gia", "authentication_key" : "key" }'
+
+
+
+
+POST http://localhost:8080/capsaicine/api/user '{ "firstname" : "gui", "lastname" : "gia", "mail" : "gui@gia", "password" : "pass" }'
+POST http://localhost:8081/capsaicine/api/user '{ "firstname" : "gui", "lastname" : "gia", "mail" : "gui@gia2", "password" : "pass" }'
+GET http://localhost:8081/capsaicine/api/test/user/gui@gia
+GET http://localhost:8081/capsaicine/api/test/user/gui@gia2
+GET http://localhost:8080/capsaicine/api/test/user/gui@gia
+GET http://localhost:8080/capsaicine/api/test/user/gui@gia2
+
 
 

@@ -1,10 +1,8 @@
 package usi.poc.business.impl;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
+import java.util.Map;
+
+import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
@@ -25,50 +23,21 @@ import usi.poc.business.itf.UserRankingList;
 @Service
 public class GameImpl implements IGame {
 
-	private Connection conn;
-
+	@Resource	
+	private Map<String, User> usersCache;
+	
 	public GameImpl() {
-		try {
-			Class.forName("org.postgresql.Driver");				
-			Properties props = new Properties();
-			props.setProperty("user","postgres");
-			props.setProperty("password","root");
-			conn = DriverManager.getConnection("jdbc:postgresql://localhost/TestUSI", props);
-			System.out.println("DataBase connection OK");
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	}
 
-	
 	@Override
-	public void createUser(User user) {
-		try {
-			System.out.println(user);
-			
-			Statement st = conn.createStatement();
-			StringBuilder query = new StringBuilder("INSERT INTO users(email, firstname, lastname, passw) VALUES ('");
-			query.append(user.getMail())
-				 .append("', '")
-				 .append(user.getFirstname())
-				 .append("', '")
-				 .append(user.getLastname())
-				 .append("', '")
-				 .append(user.getPassword())
- 				 .append("');");
-
-			st.execute(query.toString());
-
+	public boolean createUser(User user) {
+		String key = user.getMail();
+		if ( usersCache.containsKey(key) ) {
+			return false;
 		}
-		catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		usersCache.put(user.getMail(), user);
+		return true;
 	}
 
 	
