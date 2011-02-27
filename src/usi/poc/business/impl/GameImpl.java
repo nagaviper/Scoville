@@ -50,10 +50,11 @@ public class GameImpl implements IGame {
 
 	
 	@Override
-	public void login(LoginInformation loginInformation) {
+	public String login(LoginInformation loginInformation) {
 		System.out.println("GameImpl.login()");
 		System.out.println("Not yet implemented...");
 		System.out.println(loginInformation);
+		return "123";
 	}
 
 	

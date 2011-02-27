@@ -7,7 +7,7 @@ public interface IGame {
 	
 	public void createGame(AdminGame game);
 	
-	public void login(LoginInformation loginInformation);
+	public String login(LoginInformation loginInformation);
 	
 	public Question getQuestion(int n);
 	

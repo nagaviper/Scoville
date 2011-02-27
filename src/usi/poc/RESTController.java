@@ -1,8 +1,10 @@
 package usi.poc;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -56,8 +58,14 @@ public class RESTController {
 
 	@RequestMapping(value="/login", method=RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public void login(@RequestBody LoginInformation loginInformation) throws Exception {
-		game.login(loginInformation);
+	public void login(@RequestBody LoginInformation loginInformation,
+		HttpServletRequest request,
+		HttpServletResponse response) throws Exception {
+		HttpSession session = request.getSession();
+		session.getId();
+		String userId = game.login(loginInformation);
+		Cookie cookie = new Cookie("session_key", userId);
+		response.addCookie(cookie);
 	}
 	
 
