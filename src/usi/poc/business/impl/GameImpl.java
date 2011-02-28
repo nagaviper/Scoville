@@ -2,7 +2,6 @@ package usi.poc.business.impl;
 
 import java.io.StringReader;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.xml.bind.JAXBContext;
@@ -81,7 +80,6 @@ public class GameImpl implements IGame {
 	
 	@Override
 	public boolean createGame(String xmlParameters) {
-		System.out.println("GameImpl.createGame()");
 		if ( gameDataDao.isGameExists() ) {
 			return false;
 		}
@@ -121,16 +119,11 @@ public class GameImpl implements IGame {
 
 	
 	@Override
-	public Question getQuestion(int n) {
-		System.out.println("GameImpl.getQuestion()");
-		System.out.println("Not yet implemented...");
-		Question q = new Question();
-		q.setQuestion("Pourquoi Marc n'aime t-il pas JAVA ?");
-		q.setAnswer_1("Parce que trop de monde deteste le C");
-		q.setAnswer_2("Parce que le logo n'est pas une tasse de thé");
-		q.setAnswer_3("Parce que c'est trop facile");
-		q.setAnswer_4("Parce que... Non, en fait il n'y a pas de raison");
-		return q;
+	public Question getQuestion(String userId, int n) {
+		Question question = gameDataDao.getGame().getQuestion(n).clone();
+		int score = userDao.getScore(userId);
+		question.setScore(score);		
+		return question;
 	}
 
 

@@ -45,6 +45,10 @@ public class GameData implements IQuizzObject {
 		this.flushusertable = flushusertable;
 	}
 
+	public Question getQuestion(int i) {
+		return question[i];
+	}
+	
 	public Question[] getQuestion() {
 		return question;
 	}

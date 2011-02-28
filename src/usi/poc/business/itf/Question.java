@@ -1,6 +1,6 @@
 package usi.poc.business.itf;
 
-public class Question implements IQuizzObject {
+public class Question implements IQuizzObject, Cloneable {
 
 	/**
 	 * 
@@ -79,6 +79,15 @@ public class Question implements IQuizzObject {
 	public String toString() {
 		return "Question [question=" + question + ", answer_1=" + answer_1 + ", answer_2=" + answer_2
 		                   + ", answer_3=" + answer_3 + ", answer_4=" + answer_4 + ", score=" + score + "]";
+	}
+	
+	@Override
+	public Question clone() {
+		try {
+			return (Question) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 }

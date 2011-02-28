@@ -89,7 +89,7 @@ public class RESTController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@ResponseBody
 	public Question question(@PathVariable int n) throws Exception {
-		return game.getQuestion(n);
+		return game.getQuestion(null /* FIXME - replace null by sessionId */, n);
 	}
 	
 	

@@ -30,7 +30,7 @@ public interface IGame {
 	
 	public String login(LoginInformation loginInformation);
 	
-	public Question getQuestion(int n);
+	public Question getQuestion(String userId, int n);
 	
 	public AnswerFeedback answerQuestion(String userId, int n, Answer answer);
 	

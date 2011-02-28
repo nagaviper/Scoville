@@ -4,8 +4,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.springframework.stereotype.Service;
-
 import usi.poc.business.itf.User;
 
 import com.gemstone.gemfire.cache.Region;
@@ -43,4 +41,11 @@ public class GemUserDAO extends AbstractGemDAO implements IUserDAO {
 		}
 		return false;
 	}
+
+	@Override
+	public int getScore(String sessionId) {
+		// TODO to implements... where should we store score ? in User bean ?
+		return 0;
+	}
+	
 }
