@@ -1,6 +1,5 @@
 package usi.poc.business.itf;
 
-import usi.poc.business.impl.game.mapping.Sessiontype;
 
 
 public interface IGame {
@@ -23,7 +22,7 @@ public interface IGame {
 	 * Get the game
 	 * @return the game reference if it exists, null otherwise
 	 */
-	public Sessiontype getGame();
+	public GameData getGameData();
 	
 	public void login(LoginInformation loginInformation);
 	
