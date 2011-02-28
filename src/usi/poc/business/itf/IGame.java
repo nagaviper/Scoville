@@ -1,13 +1,32 @@
 package usi.poc.business.itf;
 
 
+
 public interface IGame {
 
 	public User getUser(String key);
+
 	public boolean existsUser(String id);
+
+	/**
+	 * User creation
+	 * @param user
+	 * @return true if user had been created, false if it already exists
+	 */
 	public boolean createUser(User user);
 	
-	public void createGame(String xmlParameters);
+	/**
+	 * Game creation
+	 * @param xmlParameters xml string matching gamesession.xsd schema
+	 * @return true if game had been created, false if it already exists
+	 */
+	public boolean createGame(String xmlParameters);
+	
+	/**
+	 * Get the game
+	 * @return the game reference if it exists, null otherwise
+	 */
+	public GameData getGameData();
 	
 	public String login(LoginInformation loginInformation);
 	

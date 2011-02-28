@@ -7,13 +7,13 @@ public class Question {
 	private String answer_2;
 	private String answer_3;
 	private String answer_4;
-	private String score;
+	private int score;
 
 	public Question() {
 
 	}
 	
-	public Question(String question, String answer_1, String answer_2, String answer_3, String answer_4, String score) {
+	public Question(String question, String answer_1, String answer_2, String answer_3, String answer_4, int score) {
 		super();
 		this.question = question;
 		this.answer_1 = answer_1;
@@ -55,11 +55,11 @@ public class Question {
 		this.answer_4 = answer_4;
 	}
 
-	public String getScore() {
+	public int getScore() {
 		return score;
 	}
 
-	public void setScore(String score) {
+	public void setScore(int score) {
 		this.score = score;
 	}
 
@@ -70,7 +70,7 @@ public class Question {
 	public void setQuestion(String question) {
 		this.question = question;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "Question [question=" + question + ", answer_1=" + answer_1 + ", answer_2=" + answer_2

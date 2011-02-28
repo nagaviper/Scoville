@@ -49,6 +49,11 @@
 		<constructor-arg index="1" ref="usersCacheListener" />
 	</bean>
 	
+	<bean id="gameCache" factory-bean="distributedCacheProvider" factory-method="createReplicatedCache">
+		<constructor-arg index="0" value="game" />
+	</bean>
+
+	
 	<!-- DAO -->
 	<bean id="userDAO" class="usi.poc.data.GemUserDAO" />
 

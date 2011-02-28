@@ -1,15 +1,26 @@
 package usi.poc.business.impl;
 
+import java.io.StringReader;
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 import org.springframework.stereotype.Service;
 
+import usi.poc.business.impl.game.mapping.Parametertype;
+import usi.poc.business.impl.game.mapping.Sessiontype;
 import usi.poc.business.itf.AdminUserAnswer;
 import usi.poc.business.itf.AdminUserAnswers;
 import usi.poc.business.itf.AdminUserRanking;
 import usi.poc.business.itf.AdminUserRequest;
 import usi.poc.business.itf.Answer;
 import usi.poc.business.itf.AnswerFeedback;
+import usi.poc.business.itf.GameData;
 import usi.poc.business.itf.IGame;
 import usi.poc.business.itf.LoginInformation;
 import usi.poc.business.itf.Question;
@@ -20,10 +31,24 @@ import usi.poc.data.IUserDAO;
 
 @Service
 public class GameImpl implements IGame {
-	
+
 	@Resource
 	private IUserDAO userDao;
+
+	@Resource	
+	private Map<String, GameData> gameCache;
 	
+	private static Unmarshaller gameUnmarshaller;
+	
+	static {
+		try {
+			gameUnmarshaller = JAXBContext.newInstance(Sessiontype.class.getPackage().getName()).createUnmarshaller();
+		} catch (JAXBException e) {
+			// TODO - Very big problem !!!
+			e.printStackTrace();
+		}
+	}
+		
 	public GameImpl() {
 		
 	}
@@ -47,13 +72,41 @@ public class GameImpl implements IGame {
 		userDao.put(user.getMail(), user);
 		return true;
 	}
-
 	
 	@Override
-	public void createGame(String xmlParameters) {
+	public GameData getGameData() {
+		return gameCache.get(0);
+	}
+	
+	@Override
+	public boolean createGame(String xmlParameters) {
 		System.out.println("GameImpl.createGame()");
-		System.out.println("Not yet implemented...");
-		System.out.println(xmlParameters);
+		if ( gameCache.size() == 1 ) {
+			return false;
+		}
+		try {
+			@SuppressWarnings("unchecked")
+			JAXBElement<Sessiontype> doc = (JAXBElement<Sessiontype>) gameUnmarshaller.unmarshal(new StringReader(xmlParameters));
+			Sessiontype s = doc.getValue();
+			Parametertype p = s.getParameters();
+			int nbQuestions = s.getQuestions().getQuestion().size();
+			Question [] questions = new Question [nbQuestions];
+
+			int i = 0;
+			for ( usi.poc.business.impl.game.mapping.Question q : s.getQuestions().getQuestion() ) {
+				List<String> choices = q.getChoice();
+				questions[i++] = new Question(q.getLabel(), choices.get(0), choices.get(0), choices.get(0), choices.get(0), 0);
+			}			
+			GameData gameData = new GameData(questions, p.getLongpollingduration(), p.getNbusersthreshold(),
+												p.getQuestiontimeframe(), p.getNbquestions(), p.isFlushusertable());
+			
+			gameCache.put("game", gameData);
+		}
+		catch (JAXBException e) {
+			// TODO - Very big problem !!!
+			e.printStackTrace();
+		}
+		return true;
 	}
 
 	
@@ -126,5 +179,6 @@ public class GameImpl implements IGame {
 		System.out.println("Not yet implemented...");
 		return new AdminUserAnswer();
 	}
+	
 }
 

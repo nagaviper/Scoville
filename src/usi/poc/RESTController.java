@@ -56,7 +56,9 @@ public class RESTController {
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public void game(@RequestBody AdminGame adminGame) throws Exception {
 		if ( AUTHENTICATION_KEY.equals(adminGame.getAuthentication_key()) ) {
-			game.createGame(adminGame.getParameters());
+			if ( ! game.createGame(adminGame.getParameters()) ) {
+				throw new BadRequestException();
+			}
 		}
 		else {
 			throw new UnauthorizedException();

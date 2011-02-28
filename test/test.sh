@@ -40,6 +40,7 @@ POST ()
         fi
         CMD='curl -sL -w "%{http_code} %{url_effective}\\n" -H "Accept: application/json" -H "Content-Type: application/json" -X POST '$1$DATA' -o '$OUTPUT
         echo $CMD > post_curl_$$
+        cat post_curl_$$
         sh post_curl_$$
         rm -f post_curl_$$
         if [ -e $OUTPUT ] ; then
