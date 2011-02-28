@@ -29,8 +29,9 @@ import usi.poc.business.itf.UserRanking;
 
 @Controller
 public class RESTController {
-	
+
 	private static final String SESSION_KEY = "session_key";
+	private static final String AUTHENTICATION_KEY = "key";
 
 	@Resource
 	private IGame game;
@@ -54,7 +55,12 @@ public class RESTController {
 	@RequestMapping(value="/game", method=RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public void game(@RequestBody AdminGame adminGame) throws Exception {
-		game.createGame(adminGame);
+		if ( AUTHENTICATION_KEY.equals(adminGame.getAuthentication_key()) ) {
+			game.createGame(adminGame.getParameters());
+		}
+		else {
+			throw new UnauthorizedException();
+		}
 	}
 
 

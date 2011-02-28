@@ -7,7 +7,7 @@ public interface IGame {
 	public boolean existsUser(String id);
 	public boolean createUser(User user);
 	
-	public void createGame(AdminGame game);
+	public void createGame(String xmlParameters);
 	
 	public String login(LoginInformation loginInformation);
 	
