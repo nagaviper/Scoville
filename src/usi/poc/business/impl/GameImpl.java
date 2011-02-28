@@ -22,7 +22,6 @@ import usi.poc.business.itf.Answer;
 import usi.poc.business.itf.AnswerFeedback;
 import usi.poc.business.itf.GameData;
 import usi.poc.business.itf.IGame;
-import usi.poc.business.itf.LoginInformation;
 import usi.poc.business.itf.Question;
 import usi.poc.business.itf.User;
 import usi.poc.business.itf.UserRanking;
@@ -111,15 +110,6 @@ public class GameImpl implements IGame {
 
 	
 	@Override
-	public String login(LoginInformation loginInformation) {
-		System.out.println("GameImpl.login()");
-		System.out.println("Not yet implemented...");
-		System.out.println(loginInformation);
-		return "123";
-	}
-
-	
-	@Override
 	public Question getQuestion(int n) {
 		System.out.println("GameImpl.getQuestion()");
 		System.out.println("Not yet implemented...");
@@ -134,7 +124,7 @@ public class GameImpl implements IGame {
 
 
 	@Override
-	public AnswerFeedback answerQuestion(String userId, int n, Answer answer) {
+	public AnswerFeedback answerQuestion(User user, int n, Answer answer) {
 		System.out.println("GameImpl.answerQuestion()");
 		System.out.println("Not yet implemented...");
 		System.out.println(answer);
@@ -143,7 +133,7 @@ public class GameImpl implements IGame {
 
 	
 	@Override
-	public UserRanking getRanking(String userId) {
+	public UserRanking getRanking(User user) {
 		System.out.println("GameImpl.getRanking()");
 		System.out.println("Not yet implemented...");
 		UserRanking r = new UserRanking();

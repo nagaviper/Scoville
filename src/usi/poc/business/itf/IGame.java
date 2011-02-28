@@ -27,14 +27,12 @@ public interface IGame {
 	 * @return the game reference if it exists, null otherwise
 	 */
 	public GameData getGameData();
-	
-	public String login(LoginInformation loginInformation);
-	
+		
 	public Question getQuestion(int n);
 	
-	public AnswerFeedback answerQuestion(String userId, int n, Answer answer);
+	public AnswerFeedback answerQuestion(User user, int n, Answer answer);
 	
-	public UserRanking getRanking(String userId);
+	public UserRanking getRanking(User user);
 	
 	public AdminUserRanking getUserRanking(AdminUserRequest request);
 	

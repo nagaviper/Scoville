@@ -85,7 +85,10 @@ public class RESTController {
 	@RequestMapping(value="/question/{n}",method=RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
 	@ResponseBody
-	public Question question(@PathVariable int n) throws Exception {
+	public Question question(@PathVariable int n,
+			HttpServletRequest request) throws Exception {
+		if (! this.isUserLoggedIn(request))
+			throw new UnauthorizedException();
 		return game.getQuestion(n);
 	}
 	
@@ -97,27 +100,21 @@ public class RESTController {
 			@RequestBody Answer answer,
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		if (! userIsLoggedIn(request))
+		User user = this.getLoggedUser(request);
+		if (user == null)
 			throw new UnauthorizedException();
-		String userId = null; // TODO get user ID fron cookie in HTTP header
-		return game.answerQuestion(userId, n, answer);
+		return game.answerQuestion(user, n, answer);
 	}
 	
 	
-	private boolean userIsLoggedIn(HttpServletRequest request) {
-		Cookie[] cookies = request.getCookies();
-		for (Cookie cookie : cookies)
-			if (cookie.getName().equals(SESSION_KEY))
-				return game.existsUser(cookie.getValue());
-		return false;
-	}
-
 	@RequestMapping(value="/ranking", method=RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
 	@ResponseBody
 	public UserRanking ranking(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String userId = null; // TODO get user ID fron cookie in HTTP header
-		return game.getRanking(userId);
+		User user = this.getLoggedUser(request);
+		if (user == null)
+			throw new UnauthorizedException();
+		return game.getRanking(user);
 	}
 	
 	
@@ -144,5 +141,28 @@ public class RESTController {
 		return game.getUserAnswer(userRequest, n);
 	}
 
+
+	private User getLoggedUser(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+		for (Cookie cookie : cookies) {
+			if (cookie.getName().equals(SESSION_KEY)) {
+				User user = game.getUser(cookie.getValue());
+				if (user.isLogged())
+					return user;
+				else
+					return null;
+			}
+		}
+		return null;
+	}
+
+
+	private boolean isUserLoggedIn(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+		for (Cookie cookie : cookies)
+			if (cookie.getName().equals(SESSION_KEY))
+				return game.existsUser(cookie.getValue());
+		return false;
+	}
 	
 }
