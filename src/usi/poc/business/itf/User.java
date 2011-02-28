@@ -6,22 +6,22 @@ public class User implements Serializable, IQuizzObject {
 	
 	private static final long serialVersionUID = 3884899046258970447L;
 
-	private String id;
+	private boolean is_logged;
 	private String mail;
 	private String firstname;
 	private String lastname;
 	private String password;
 	
 	public User() {
-
+		this.is_logged = false;
 	}
 	
-	public String getId() {
-		return id;
+	public boolean isLogged() {
+		return is_logged;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setLogged() {
+		this.is_logged = true;
 	}
 
 	public String getMail() {
@@ -58,7 +58,7 @@ public class User implements Serializable, IQuizzObject {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", mail=" + mail + ", firstname=" + firstname
+		return "User [logged=" + is_logged + ", mail=" + mail + ", firstname=" + firstname
 				+ ", lastname=" + lastname + ", password=" + password + "]";
 	}
 

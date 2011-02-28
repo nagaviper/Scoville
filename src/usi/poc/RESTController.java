@@ -67,18 +67,15 @@ public class RESTController {
 	@RequestMapping(value="/login", method=RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public void login(@RequestBody LoginInformation loginInformation,
-		HttpServletRequest request,
 		HttpServletResponse response) throws Exception {
 		User user = game.getUser(loginInformation.getMail());
-		if (user == null || ! user.getPassword().equals(loginInformation.getPassword())) {
+		if (user == null || ! user.getPassword().equals(loginInformation.getPassword()))
 			throw new UnauthorizedException();
-		}
-		else if (user.getId() != null)
+		else if (user.isLogged())
 			throw new BadRequestException();
 		else {
-			String id = request.getSession().getId();
-			response.addCookie(new Cookie(SESSION_KEY, id));
-			user.setId(id);
+			response.addCookie(new Cookie(SESSION_KEY, loginInformation.getMail()));
+			user.setLogged();
 		}
 	}
 	
