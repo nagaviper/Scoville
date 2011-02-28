@@ -1,6 +1,7 @@
 package usi.poc;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,7 +29,8 @@ import usi.poc.business.itf.UserRanking;
 
 @Controller
 public class RESTController {
-	
+
+	private static final String SESSION_KEY = "session_key";
 	private static final String AUTHENTICATION_KEY = "key";
 
 	@Resource
@@ -45,7 +47,8 @@ public class RESTController {
 	@RequestMapping(value="/user", method=RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public void user(@RequestBody User user) throws Exception {
-		game.createUser(user);
+		if (! game.createUser(user))
+			throw new BadRequestException();
 	}
 
 
@@ -65,8 +68,20 @@ public class RESTController {
 
 	@RequestMapping(value="/login", method=RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public void login(@RequestBody LoginInformation loginInformation) throws Exception {
-		game.login(loginInformation);
+	public void login(@RequestBody LoginInformation loginInformation,
+		HttpServletRequest request,
+		HttpServletResponse response) throws Exception {
+		User user = game.getUser(loginInformation.getMail());
+		if (user == null || ! user.getPassword().equals(loginInformation.getPassword())) {
+			throw new UnauthorizedException();
+		}
+		else if (user.getId() != null)
+			throw new BadRequestException();
+		else {
+			String id = request.getSession().getId();
+			response.addCookie(new Cookie(SESSION_KEY, id));
+			user.setId(id);
+		}
 	}
 	
 
@@ -81,12 +96,25 @@ public class RESTController {
 	@RequestMapping(value="/answer/{n}", method=RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
 	@ResponseBody
-	public AnswerFeedback answer(@PathVariable int n, @RequestBody Answer answer, HttpServletResponse response) throws Exception {
+	public AnswerFeedback answer(@PathVariable int n,
+			@RequestBody Answer answer,
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		if (! userIsLoggedIn(request))
+			throw new UnauthorizedException();
 		String userId = null; // TODO get user ID fron cookie in HTTP header
 		return game.answerQuestion(userId, n, answer);
 	}
 	
 	
+	private boolean userIsLoggedIn(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+		for (Cookie cookie : cookies)
+			if (cookie.getName().equals(SESSION_KEY))
+				return game.existsUser(cookie.getValue());
+		return false;
+	}
+
 	@RequestMapping(value="/ranking", method=RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
 	@ResponseBody

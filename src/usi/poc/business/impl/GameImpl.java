@@ -27,12 +27,13 @@ import usi.poc.business.itf.Question;
 import usi.poc.business.itf.User;
 import usi.poc.business.itf.UserRanking;
 import usi.poc.business.itf.UserRankingList;
+import usi.poc.data.IUserDAO;
 
 @Service
 public class GameImpl implements IGame {
 
-	@Resource	
-	private Map<String, User> usersCache;
+	@Resource
+	private IUserDAO userDao;
 
 	@Resource	
 	private Map<String, GameData> gameCache;
@@ -47,18 +48,28 @@ public class GameImpl implements IGame {
 			e.printStackTrace();
 		}
 	}
-	
+		
 	public GameImpl() {
 		
+	}
+	
+	@Override
+	public User getUser(String key) {
+		return (User)userDao.get(key);
+	}
+	
+	@Override
+	public boolean existsUser(String sessionId) {
+		return userDao.existUser(sessionId);
 	}
 
 	@Override
 	public boolean createUser(User user) {
 		String key = user.getMail();
-		if ( usersCache.containsKey(key) ) {
+		if (userDao.contains(key))
 			return false;
-		}
-		usersCache.put(user.getMail(), user);
+
+		userDao.put(user.getMail(), user);
 		return true;
 	}
 	
@@ -100,10 +111,11 @@ public class GameImpl implements IGame {
 
 	
 	@Override
-	public void login(LoginInformation loginInformation) {
+	public String login(LoginInformation loginInformation) {
 		System.out.println("GameImpl.login()");
 		System.out.println("Not yet implemented...");
 		System.out.println(loginInformation);
+		return "123";
 	}
 
 	
@@ -167,7 +179,6 @@ public class GameImpl implements IGame {
 		System.out.println("Not yet implemented...");
 		return new AdminUserAnswer();
 	}
-
-
+	
 }
 

@@ -4,6 +4,10 @@ package usi.poc.business.itf;
 
 public interface IGame {
 
+	public User getUser(String key);
+
+	public boolean existsUser(String id);
+
 	/**
 	 * User creation
 	 * @param user
@@ -24,7 +28,7 @@ public interface IGame {
 	 */
 	public GameData getGameData();
 	
-	public void login(LoginInformation loginInformation);
+	public String login(LoginInformation loginInformation);
 	
 	public Question getQuestion(int n);
 	
