@@ -55,7 +55,9 @@
 
 	
 	<!-- DAO -->
+	
 	<bean id="userDAO" class="usi.poc.data.GemUserDAO" />
 
+	<bean id="gameDataDAO" class="usi.poc.data.GemGameDataDAO" />
 
 </beans>

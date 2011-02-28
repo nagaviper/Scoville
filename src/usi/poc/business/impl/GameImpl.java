@@ -27,6 +27,7 @@ import usi.poc.business.itf.Question;
 import usi.poc.business.itf.User;
 import usi.poc.business.itf.UserRanking;
 import usi.poc.business.itf.UserRankingList;
+import usi.poc.data.IGameDataDAO;
 import usi.poc.data.IUserDAO;
 
 @Service
@@ -36,7 +37,7 @@ public class GameImpl implements IGame {
 	private IUserDAO userDao;
 
 	@Resource	
-	private Map<String, GameData> gameCache;
+	private IGameDataDAO gameDataDao;
 	
 	private static Unmarshaller gameUnmarshaller;
 	
@@ -75,13 +76,13 @@ public class GameImpl implements IGame {
 	
 	@Override
 	public GameData getGameData() {
-		return gameCache.get(0);
+		return gameDataDao.getGame();
 	}
 	
 	@Override
 	public boolean createGame(String xmlParameters) {
 		System.out.println("GameImpl.createGame()");
-		if ( gameCache.size() == 1 ) {
+		if ( gameDataDao.isGameExists() ) {
 			return false;
 		}
 		try {
@@ -100,7 +101,7 @@ public class GameImpl implements IGame {
 			GameData gameData = new GameData(questions, p.getLongpollingduration(), p.getNbusersthreshold(),
 												p.getQuestiontimeframe(), p.getNbquestions(), p.isFlushusertable());
 			
-			gameCache.put("game", gameData);
+			gameDataDao.createGame(gameData);
 		}
 		catch (JAXBException e) {
 			// TODO - Very big problem !!!

@@ -2,7 +2,7 @@ package usi.poc.business.itf;
 
 
 
-public class GameData {
+public class GameData implements IQuizzObject {
 	
 	private Question [] question;
 	private int longpollingduration;
