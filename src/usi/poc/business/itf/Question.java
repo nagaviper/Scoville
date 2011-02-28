@@ -1,7 +1,11 @@
 package usi.poc.business.itf;
 
-public class Question {
+public class Question implements IQuizzObject {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1691798697463082845L;
 	private String question;
 	private String answer_1;
 	private String answer_2;

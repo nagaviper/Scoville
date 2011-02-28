@@ -1,5 +1,7 @@
 package usi.poc.business.itf;
 
-public interface IQuizzObject {
+import java.io.Serializable;
+
+public interface IQuizzObject extends Serializable {
 
 }

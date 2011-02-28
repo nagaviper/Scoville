@@ -1,7 +1,11 @@
 package usi.poc.business.itf;
 
-public class AdminUserRequest {
+public class AdminUserRequest implements IQuizzObject {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6123867533779213995L;
 	private String user_mail;
 	private String authentication_key;
 	

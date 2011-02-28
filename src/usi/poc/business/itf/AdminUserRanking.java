@@ -1,8 +1,12 @@
 package usi.poc.business.itf;
 
 
-public class AdminUserRanking {
+public class AdminUserRanking implements IQuizzObject {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5042899820333878557L;
 	private int score;
 	private int ranking;
 

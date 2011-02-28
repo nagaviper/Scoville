@@ -1,8 +1,7 @@
 package usi.poc.business.itf;
 
-import java.io.Serializable;
 
-public class User implements Serializable, IQuizzObject {
+public class User implements IQuizzObject {
 	
 	private static final long serialVersionUID = 3884899046258970447L;
 

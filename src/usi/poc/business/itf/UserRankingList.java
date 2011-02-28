@@ -2,8 +2,12 @@ package usi.poc.business.itf;
 
 import java.util.Arrays;
 
-public class UserRankingList {
+public class UserRankingList implements IQuizzObject {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 611035594266877082L;
 	private String [] mail;
 	private int [] scores;
 	private String [] firstname;
