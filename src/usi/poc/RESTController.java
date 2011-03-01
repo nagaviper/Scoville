@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import usi.SessionUtils;
 import usi.poc.business.itf.AdminGame;
 import usi.poc.business.itf.AdminUserAnswer;
 import usi.poc.business.itf.AdminUserAnswers;
@@ -30,7 +31,6 @@ import usi.poc.business.itf.UserRanking;
 @Controller
 public class RESTController {
 
-	private static final String SESSION_KEY = "session_key";
 	private static final String AUTHENTICATION_KEY = "key";
 
 	@Resource
@@ -76,7 +76,7 @@ public class RESTController {
 		else if (user.isLogged())
 			throw new BadRequestException();
 		else {
-			response.addCookie(new Cookie(SESSION_KEY, loginInformation.getMail()));
+			response.addCookie(new Cookie(SessionUtils.SESSION_KEY, loginInformation.getMail()));
 			user.setLogged();
 		}
 	}
@@ -87,9 +87,10 @@ public class RESTController {
 	@ResponseBody
 	public Question question(@PathVariable int n,
 			HttpServletRequest request) throws Exception {
-		if (! this.isUserLoggedIn(request))
+		User user = SessionUtils.getLoggedUser(request, game);
+		if (user == null)
 			throw new UnauthorizedException();
-		return game.getQuestion(n);
+		return game.getQuestion(user, n);
 	}
 	
 	
@@ -100,7 +101,7 @@ public class RESTController {
 			@RequestBody Answer answer,
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		User user = this.getLoggedUser(request);
+		User user = SessionUtils.getLoggedUser(request, game);
 		if (user == null)
 			throw new UnauthorizedException();
 		return game.answerQuestion(user, n, answer);
@@ -111,7 +112,7 @@ public class RESTController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@ResponseBody
 	public UserRanking ranking(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		User user = this.getLoggedUser(request);
+		User user = SessionUtils.getLoggedUser(request, game);
 		if (user == null)
 			throw new UnauthorizedException();
 		return game.getRanking(user);
@@ -140,29 +141,4 @@ public class RESTController {
 	public AdminUserAnswer auditAnswer(AdminUserRequest userRequest, @PathVariable int n) throws Exception {
 		return game.getUserAnswer(userRequest, n);
 	}
-
-
-	private User getLoggedUser(HttpServletRequest request) {
-		Cookie[] cookies = request.getCookies();
-		for (Cookie cookie : cookies) {
-			if (cookie.getName().equals(SESSION_KEY)) {
-				User user = game.getUser(cookie.getValue());
-				if (user.isLogged())
-					return user;
-				else
-					return null;
-			}
-		}
-		return null;
-	}
-
-
-	private boolean isUserLoggedIn(HttpServletRequest request) {
-		Cookie[] cookies = request.getCookies();
-		for (Cookie cookie : cookies)
-			if (cookie.getName().equals(SESSION_KEY))
-				return game.existsUser(cookie.getValue());
-		return false;
-	}
-	
 }

@@ -2,8 +2,12 @@ package usi.poc.business.itf;
 
 
 
-public class GameData {
+public class GameData implements IQuizzObject {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -691230606112571557L;
 	private Question [] question;
 	private int longpollingduration;
 	private int nbusersthreshold;
@@ -41,6 +45,10 @@ public class GameData {
 		this.flushusertable = flushusertable;
 	}
 
+	public Question getQuestion(int i) {
+		return question[i];
+	}
+	
 	public Question[] getQuestion() {
 		return question;
 	}

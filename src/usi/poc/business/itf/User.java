@@ -1,8 +1,7 @@
 package usi.poc.business.itf;
 
-import java.io.Serializable;
 
-public class User implements Serializable, IQuizzObject {
+public class User implements IQuizzObject {
 	
 	private static final long serialVersionUID = 3884899046258970447L;
 
@@ -11,6 +10,7 @@ public class User implements Serializable, IQuizzObject {
 	private String firstname;
 	private String lastname;
 	private String password;
+	private short score;
 	
 	public User() {
 		this.is_logged = false;
@@ -54,6 +54,14 @@ public class User implements Serializable, IQuizzObject {
 	
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public short getScore() {
+		return score;
+	}
+
+	public void setScore(short score) {
+		this.score = score;
 	}
 
 	@Override

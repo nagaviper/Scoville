@@ -2,7 +2,6 @@ package usi.poc.business.impl;
 
 import java.io.StringReader;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.xml.bind.JAXBContext;
@@ -26,6 +25,7 @@ import usi.poc.business.itf.Question;
 import usi.poc.business.itf.User;
 import usi.poc.business.itf.UserRanking;
 import usi.poc.business.itf.UserRankingList;
+import usi.poc.data.IGameDataDAO;
 import usi.poc.data.IUserDAO;
 
 @Service
@@ -35,7 +35,7 @@ public class GameImpl implements IGame {
 	private IUserDAO userDao;
 
 	@Resource	
-	private Map<String, GameData> gameCache;
+	private IGameDataDAO gameDataDao;
 	
 	private static Unmarshaller gameUnmarshaller;
 	
@@ -74,13 +74,12 @@ public class GameImpl implements IGame {
 	
 	@Override
 	public GameData getGameData() {
-		return gameCache.get(0);
+		return gameDataDao.getGame();
 	}
 	
 	@Override
 	public boolean createGame(String xmlParameters) {
-		System.out.println("GameImpl.createGame()");
-		if ( gameCache.size() == 1 ) {
+		if ( gameDataDao.isGameExists() ) {
 			return false;
 		}
 		try {
@@ -99,7 +98,7 @@ public class GameImpl implements IGame {
 			GameData gameData = new GameData(questions, p.getLongpollingduration(), p.getNbusersthreshold(),
 												p.getQuestiontimeframe(), p.getNbquestions(), p.isFlushusertable());
 			
-			gameCache.put("game", gameData);
+			gameDataDao.createGame(gameData);
 		}
 		catch (JAXBException e) {
 			// TODO - Very big problem !!!
@@ -110,16 +109,11 @@ public class GameImpl implements IGame {
 
 	
 	@Override
-	public Question getQuestion(int n) {
-		System.out.println("GameImpl.getQuestion()");
-		System.out.println("Not yet implemented...");
-		Question q = new Question();
-		q.setQuestion("Pourquoi Marc n'aime t-il pas JAVA ?");
-		q.setAnswer_1("Parce que trop de monde deteste le C");
-		q.setAnswer_2("Parce que le logo n'est pas une tasse de thé");
-		q.setAnswer_3("Parce que c'est trop facile");
-		q.setAnswer_4("Parce que... Non, en fait il n'y a pas de raison");
-		return q;
+	public Question getQuestion(User user, int n) {
+		Question question = gameDataDao.getGame().getQuestion(n).clone();
+		int score = userDao.getScore(user);
+		question.setScore(score);		
+		return question;
 	}
 
 

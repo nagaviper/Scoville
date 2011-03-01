@@ -1,7 +1,11 @@
 package usi.poc.business.itf;
 
-public class AnswerFeedback {
+public class AnswerFeedback implements IQuizzObject {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1294786418646252569L;
 	private boolean are_u_right;
 	private String good_answer;
 	private int score;

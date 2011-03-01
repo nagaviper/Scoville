@@ -1,7 +1,11 @@
 package usi.poc.business.itf;
 
-public class AdminUserAnswer {
+public class AdminUserAnswer implements IQuizzObject {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1907004716027583099L;
 	private int user_answer;
 	private int good_answer;
 	private String question;

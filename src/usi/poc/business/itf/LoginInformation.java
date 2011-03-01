@@ -1,7 +1,11 @@
 package usi.poc.business.itf;
 
-public class LoginInformation {
+public class LoginInformation implements IQuizzObject {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7709143894886984452L;
 	private String mail;
 	private String password;
 	

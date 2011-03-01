@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import usi.poc.business.itf.GameData;
 import usi.poc.business.itf.IGame;
 import usi.poc.business.itf.User;
 
@@ -41,5 +42,14 @@ public class RESTControllerTest {
 		System.out.println("RESTControllerTest.userCount()");
 		return usersCache.size();
 	}
+	
+	@RequestMapping(value="/test/game", method=RequestMethod.GET)
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public GameData game() throws Exception {
+		System.out.println("RESTControllerTest.game()");
+		return game.getGameData();
+	}
+
 	
 }

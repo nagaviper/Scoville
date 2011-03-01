@@ -4,7 +4,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-
 import usi.poc.business.itf.User;
 
 import com.gemstone.gemfire.cache.Region;
@@ -26,5 +25,10 @@ public class GemUserDAO extends AbstractGemDAO implements IUserDAO {
 	@Override
 	public boolean existUser(String sessionId) {
 		return usersCache.containsKey(sessionId);
+	}
+
+	@Override
+	public short getScore(User user) {
+		return user.getScore();
 	}
 }

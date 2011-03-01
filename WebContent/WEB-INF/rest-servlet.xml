@@ -13,6 +13,8 @@
 
 	<context:component-scan base-package="usi" />
 
+	<context:property-placeholder location="/dao.properties"/>
+
 
 	<!-- JSON mapping for HTTP messages -->
 
@@ -55,7 +57,9 @@
 
 	
 	<!-- DAO -->
-	<bean id="userDAO" class="usi.poc.data.GemUserDAO" />
+	
+	<bean id="userDAO" class="${dao.user}" />
 
+	<bean id="gameDataDAO" class="${dao.gamedata}" />
 
 </beans>

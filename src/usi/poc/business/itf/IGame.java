@@ -27,8 +27,8 @@ public interface IGame {
 	 * @return the game reference if it exists, null otherwise
 	 */
 	public GameData getGameData();
-		
-	public Question getQuestion(int n);
+
+	public Question getQuestion(User user, int n);
 	
 	public AnswerFeedback answerQuestion(User user, int n, Answer answer);
 	

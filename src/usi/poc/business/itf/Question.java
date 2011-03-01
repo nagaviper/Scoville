@@ -1,7 +1,11 @@
 package usi.poc.business.itf;
 
-public class Question {
+public class Question implements IQuizzObject, Cloneable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1691798697463082845L;
 	private String question;
 	private String answer_1;
 	private String answer_2;
@@ -75,6 +79,15 @@ public class Question {
 	public String toString() {
 		return "Question [question=" + question + ", answer_1=" + answer_1 + ", answer_2=" + answer_2
 		                   + ", answer_3=" + answer_3 + ", answer_4=" + answer_4 + ", score=" + score + "]";
+	}
+	
+	@Override
+	public Question clone() {
+		try {
+			return (Question) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 }

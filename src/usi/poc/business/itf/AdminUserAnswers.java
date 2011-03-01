@@ -2,8 +2,12 @@ package usi.poc.business.itf;
 
 import java.util.Arrays;
 
-public class AdminUserAnswers {
+public class AdminUserAnswers implements IQuizzObject {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5292763037041480744L;
 	private int [] user_answers;
 	private int [] good_answers;
 	

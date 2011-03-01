@@ -30,6 +30,16 @@ public class DistributedCacheProvider {
 		return region;
 	}
 
+	public <K, V> Region<K, V> createReplicatedCache(String name) {
+		if ( regions.containsKey(name) ) {
+			// TODO : throw exception !
+		}
+		Region<K, V> region = cache.<K, V>createRegionFactory(RegionShortcut.REPLICATE)
+		.create(name);
+		regions.put(name, region);
+		return region;
+	}
+
 	@SuppressWarnings("unchecked")
 	public <K, V> Region<K, V> getCache(String name) {
 		return regions.get(name);
