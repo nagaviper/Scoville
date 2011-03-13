@@ -4,12 +4,11 @@ package usi.poc.business.itf;
 
 public class GameData implements IQuizzObject {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -691230606112571557L;
+	
 	private Question [] question;
-	private int longpollingduration;
+	private int logintimeout;
+	private int synchrotime;
 	private int nbusersthreshold;
 	private int questiontimeframe;
 	private int nbquestions;
@@ -19,13 +18,14 @@ public class GameData implements IQuizzObject {
 	 * unused
 	 */
 	private String trackeduseridmail;
-
-	public GameData(Question[] question, int longpollingduration,
+	
+	public GameData(Question[] question, int logintimeout, int synchrotime,
 			int nbusersthreshold, int questiontimeframe, int nbquestions,
 			boolean flushusertable, String trackeduseridmail) {
 		super();
 		this.question = question;
-		this.longpollingduration = longpollingduration;
+		this.logintimeout = logintimeout;
+		this.synchrotime = synchrotime;
 		this.nbusersthreshold = nbusersthreshold;
 		this.questiontimeframe = questiontimeframe;
 		this.nbquestions = nbquestions;
@@ -33,12 +33,13 @@ public class GameData implements IQuizzObject {
 		this.trackeduseridmail = trackeduseridmail;
 	}
 
-	public GameData(Question[] question, int longpollingduration,
+	public GameData(Question[] question, int logintimeout, int synchrotime,
 			int nbusersthreshold, int questiontimeframe, int nbquestions,
 			boolean flushusertable) {
 		super();
 		this.question = question;
-		this.longpollingduration = longpollingduration;
+		this.logintimeout = logintimeout;
+		this.synchrotime = synchrotime;
 		this.nbusersthreshold = nbusersthreshold;
 		this.questiontimeframe = questiontimeframe;
 		this.nbquestions = nbquestions;
@@ -53,8 +54,12 @@ public class GameData implements IQuizzObject {
 		return question;
 	}
 
-	public int getLongpollingduration() {
-		return longpollingduration;
+	public int getLogintimeout() {
+		return logintimeout;
+	}
+
+	public int getSynchrotime() {
+		return synchrotime;
 	}
 
 	public int getNbusersthreshold() {

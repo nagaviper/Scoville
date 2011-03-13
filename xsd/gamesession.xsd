@@ -22,7 +22,9 @@
     
     <xsd:complexType name="parametertype">
     	<xsd:sequence>
-    		<xsd:element name="longpollingduration" type="xsd:int" minOccurs="1" maxOccurs="1">
+    		<xsd:element name="logintimeout" type="xsd:int" minOccurs="1" maxOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="synchrotime" type="xsd:int" minOccurs="1" maxOccurs="1">
     		</xsd:element>
     		<xsd:element name="nbusersthreshold" type="xsd:int" minOccurs="1" maxOccurs="1">
     		</xsd:element>

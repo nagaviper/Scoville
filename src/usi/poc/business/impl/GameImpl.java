@@ -95,7 +95,7 @@ public class GameImpl implements IGame {
 				List<String> choices = q.getChoice();
 				questions[i++] = new Question(q.getLabel(), choices.get(0), choices.get(0), choices.get(0), choices.get(0), 0);
 			}			
-			GameData gameData = new GameData(questions, p.getLongpollingduration(), p.getNbusersthreshold(),
+			GameData gameData = new GameData(questions, p.getLogintimeout(), p.getSynchrotime(), p.getNbusersthreshold(),
 												p.getQuestiontimeframe(), p.getNbquestions(), p.isFlushusertable());
 			
 			gameDataDao.createGame(gameData);
