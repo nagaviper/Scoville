@@ -30,7 +30,10 @@ public class GemGameDataDAO extends AbstractGemDAO implements IGameDataDAO {
 
 	@Override
 	public GameData getGame() {
-		return gameCache.get(GAME_KEY);
+		GameData gameData = gameCache.get(GAME_KEY);
+		if (gameData == null)
+			throw new RuntimeException(GAME_KEY + " may not have been initialized yet");
+		return gameData;
 	}
 
 	@Override
