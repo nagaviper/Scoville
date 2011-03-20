@@ -12,6 +12,7 @@ import org.apache.catalina.CometEvent;
 import org.apache.catalina.CometProcessor;
 
 import usi.SessionUtils;
+import usi.poc.business.impl.GameImpl;
 import usi.poc.business.itf.IGame;
 import usi.poc.business.itf.Question;
 import usi.poc.business.itf.User;
@@ -29,7 +30,7 @@ public class LongPollRestController extends HttpServlet implements CometProcesso
 	}
 
 	public LongPollRestController() {
-		//questionTimer.setThrower(this);
+		this.game = GameImpl.getInstance();
 	}
 
 	@Override

@@ -129,7 +129,9 @@ public class GameImpl implements IGame {
 	@Override
 	public AnswerFeedback answerQuestion(User user, int n, Answer answer) {
 		int userChoice = answer.getAnswer();
-		int goodChoice = gameDataDao.getGame().getGoodChoice(n);
+		int goodChoice = gameDataDao
+			.getGame()
+			.getGoodChoice(n);
 		boolean good = (userChoice == goodChoice);
 		ScoreCalculator.calculate(user, n, good);
 		String goodAnswer = gameDataDao.getGame().getQuestion(n).getAnswer(goodChoice);
