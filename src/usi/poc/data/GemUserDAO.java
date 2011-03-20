@@ -28,7 +28,7 @@ public class GemUserDAO extends AbstractGemDAO implements IUserDAO {
 	}
 
 	@Override
-	public short getScore(User user) {
+	public int getScore(User user) {
 		return user.getScore();
 	}
 }

@@ -8,6 +8,6 @@ public interface IUserDAO extends IDAO {
 	
 	void put(String key, User obj);
 	
-	short getScore(User user);
-	
+	int getScore(User user);
+
 }

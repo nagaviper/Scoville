@@ -17,7 +17,7 @@ public class SessionUtils {
 				if (user != null && user.isLogged())
 					return user;
 				else
-					return null;
+					break;
 			}
 		}
 		return null;

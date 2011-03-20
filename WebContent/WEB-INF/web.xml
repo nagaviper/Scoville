@@ -5,12 +5,24 @@
     id="rest" version="2.5">
  
   <display-name>USI2011 POC</display-name>
+  
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
  
+  <servlet>
+    <servlet-name>longpoll</servlet-name>
+    <servlet-class>usi.poc.LongPollRestController</servlet-class>
+  </servlet>
   <servlet>
     <servlet-name>rest</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
   </servlet>
  
+  <servlet-mapping>
+    <servlet-name>longpoll</servlet-name>
+    <url-pattern>/api/question/*</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>rest</servlet-name>
     <url-pattern>/api/*</url-pattern>

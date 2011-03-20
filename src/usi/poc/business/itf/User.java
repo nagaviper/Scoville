@@ -1,6 +1,5 @@
 package usi.poc.business.itf;
 
-
 public class User implements IQuizzObject {
 	
 	private static final long serialVersionUID = 3884899046258970447L;
@@ -10,10 +9,13 @@ public class User implements IQuizzObject {
 	private String firstname;
 	private String lastname;
 	private String password;
-	private short score;
+	private int score;
+	private int bonus;
 	
 	public User() {
 		this.is_logged = false;
+		this.score = 0;
+		this.bonus = 0;
 	}
 	
 	public boolean isLogged() {
@@ -56,12 +58,38 @@ public class User implements IQuizzObject {
 		this.password = password;
 	}
 	
-	public short getScore() {
+	public int getScore() {
 		return score;
 	}
 
-	public void setScore(short score) {
+	public void setScore(int score) {
 		this.score = score;
+	}
+	
+	public void addScore(int unitScore) {
+		this.score += unitScore;
+	}
+	
+	public int getBonus() {
+		return bonus;
+	}
+
+	public void setBonus(int bonus) {
+		this.bonus = bonus;
+	}
+	
+	public void incrBonus() {
+		this.bonus++;
+	}
+	
+	public void resetBonus() {
+		this.bonus = 0;
+	}
+	
+	public boolean isLastRight() {
+		if (bonus != 0)
+			return true;
+		return false;
 	}
 
 	@Override

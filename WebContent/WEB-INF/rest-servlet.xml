@@ -10,11 +10,8 @@
     http://www.springframework.org/schema/context/spring-context-3.0.xsd
     http://www.springframework.org/schema/util
     http://www.springframework.org/schema/util/spring-util-3.0.xsd">
-
-	<context:component-scan base-package="usi" />
-
-	<context:property-placeholder location="/dao.properties"/>
-
+    
+    <context:component-scan base-package="usi" />
 
 	<!-- JSON mapping for HTTP messages -->
 
@@ -27,39 +24,5 @@
 	</bean>
 
 	<bean id="marshallingHttpMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
-
-
-	<!-- Caches configuration -->
-
-	<bean id="cacheFactory" class="com.gemstone.gemfire.cache.CacheFactory">
-		<constructor-arg index="0">
-			<util:properties id="distributedSystemProperties" location="gemfire.properties" />
-		</constructor-arg>
-	</bean>
-
-	<bean id="cache" factory-bean="cacheFactory" factory-method="create"/>
-	
-	<bean id="distributedCacheProvider" class="usi.poc.data.DistributedCacheProvider"/>
-	
-	
-	<!-- Specifics caches management -->
-	
-	<bean id="usersCacheListener" class="usi.poc.data.UsersCacheListener" />
-
-	<bean id="usersCache" factory-bean="distributedCacheProvider" factory-method="createReplicatedCache">
-		<constructor-arg index="0" value="users" />
-		<constructor-arg index="1" ref="usersCacheListener" />
-	</bean>
-	
-	<bean id="gameCache" factory-bean="distributedCacheProvider" factory-method="createReplicatedCache">
-		<constructor-arg index="0" value="game" />
-	</bean>
-
-	
-	<!-- DAO -->
-	
-	<bean id="userDAO" class="${dao.user}" />
-
-	<bean id="gameDataDAO" class="${dao.gamedata}" />
 
 </beans>

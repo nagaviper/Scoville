@@ -9,6 +9,7 @@ public class GameData implements IQuizzObject {
 	 */
 	private static final long serialVersionUID = -691230606112571557L;
 	private Question [] question;
+	private int[] goodChoice;
 	private int longpollingduration;
 	private int nbusersthreshold;
 	private int questiontimeframe;
@@ -20,11 +21,12 @@ public class GameData implements IQuizzObject {
 	 */
 	private String trackeduseridmail;
 
-	public GameData(Question[] question, int longpollingduration,
+	public GameData(Question[] question, int[] goodChoice, int longpollingduration,
 			int nbusersthreshold, int questiontimeframe, int nbquestions,
 			boolean flushusertable, String trackeduseridmail) {
 		super();
 		this.question = question;
+		this.goodChoice = goodChoice;
 		this.longpollingduration = longpollingduration;
 		this.nbusersthreshold = nbusersthreshold;
 		this.questiontimeframe = questiontimeframe;
@@ -33,11 +35,12 @@ public class GameData implements IQuizzObject {
 		this.trackeduseridmail = trackeduseridmail;
 	}
 
-	public GameData(Question[] question, int longpollingduration,
+	public GameData(Question[] question, int[] goodChoice, int longpollingduration,
 			int nbusersthreshold, int questiontimeframe, int nbquestions,
 			boolean flushusertable) {
 		super();
 		this.question = question;
+		this.goodChoice = goodChoice;
 		this.longpollingduration = longpollingduration;
 		this.nbusersthreshold = nbusersthreshold;
 		this.questiontimeframe = questiontimeframe;
@@ -51,6 +54,10 @@ public class GameData implements IQuizzObject {
 	
 	public Question[] getQuestion() {
 		return question;
+	}
+	
+	public int getGoodChoice(int i) {
+		return goodChoice[i];
 	}
 
 	public int getLongpollingduration() {

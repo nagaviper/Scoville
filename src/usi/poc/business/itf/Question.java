@@ -54,6 +54,18 @@ public class Question implements IQuizzObject, Cloneable {
 	public String getAnswer_4() {
 		return answer_4;
 	}
+	
+	public String getAnswer(int i) {
+		if (i == 1)
+			return answer_1;
+		if (i == 2)
+			return answer_2;
+		if (i == 3)
+			return answer_3;
+		if (i == 4)
+			return answer_4;
+		return null;
+	}
 
 	public void setAnswer_4(String answer_4) {
 		this.answer_4 = answer_4;

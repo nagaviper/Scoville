@@ -33,7 +33,7 @@ public class RESTController {
 
 	private static final String AUTHENTICATION_KEY = "key";
 
-	@Resource
+	@Resource(name="game")
 	private IGame game;
 	
 	public void setGame(IGame game) {

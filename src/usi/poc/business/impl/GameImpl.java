@@ -9,8 +9,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.springframework.stereotype.Service;
-
+import usi.poc.ScoreCalculator;
 import usi.poc.business.impl.game.mapping.Parametertype;
 import usi.poc.business.impl.game.mapping.Sessiontype;
 import usi.poc.business.itf.AdminUserAnswer;
@@ -28,7 +27,6 @@ import usi.poc.business.itf.UserRankingList;
 import usi.poc.data.IGameDataDAO;
 import usi.poc.data.IUserDAO;
 
-@Service
 public class GameImpl implements IGame {
 
 	@Resource
@@ -38,6 +36,7 @@ public class GameImpl implements IGame {
 	private IGameDataDAO gameDataDao;
 	
 	private static Unmarshaller gameUnmarshaller;
+	private static short presentQuestionNumber = 0;
 	
 	static {
 		try {
@@ -89,13 +88,15 @@ public class GameImpl implements IGame {
 			Parametertype p = s.getParameters();
 			int nbQuestions = s.getQuestions().getQuestion().size();
 			Question [] questions = new Question [nbQuestions];
+			int[] goodChoices = new int[nbQuestions];
 
 			int i = 0;
 			for ( usi.poc.business.impl.game.mapping.Question q : s.getQuestions().getQuestion() ) {
 				List<String> choices = q.getChoice();
-				questions[i++] = new Question(q.getLabel(), choices.get(0), choices.get(0), choices.get(0), choices.get(0), 0);
+				questions[i++] = new Question(q.getLabel(), choices.get(0), choices.get(1), choices.get(2), choices.get(3), 0);
+				goodChoices[i++] = q.getGoodchoice();
 			}			
-			GameData gameData = new GameData(questions, p.getLongpollingduration(), p.getNbusersthreshold(),
+			GameData gameData = new GameData(questions, goodChoices, p.getLongpollingduration(), p.getNbusersthreshold(),
 												p.getQuestiontimeframe(), p.getNbquestions(), p.isFlushusertable());
 			
 			gameDataDao.createGame(gameData);
@@ -119,10 +120,12 @@ public class GameImpl implements IGame {
 
 	@Override
 	public AnswerFeedback answerQuestion(User user, int n, Answer answer) {
-		System.out.println("GameImpl.answerQuestion()");
-		System.out.println("Not yet implemented...");
-		System.out.println(answer);
-		return new AnswerFeedback();
+		int userChoice = answer.getAnswer();
+		int goodChoice = gameDataDao.getGame().getGoodChoice(n);
+		boolean good = (userChoice == goodChoice);
+		ScoreCalculator.calculate(user, n, good);
+		String goodAnswer = gameDataDao.getGame().getQuestion(n).getAnswer(goodChoice);
+		return new AnswerFeedback(good, goodAnswer, user.getScore());
 	}
 
 	
@@ -162,6 +165,16 @@ public class GameImpl implements IGame {
 		System.out.println("GameImpl.getUserAnswer()");
 		System.out.println("Not yet implemented...");
 		return new AdminUserAnswer();
+	}
+
+	@Override
+	public Question getPresentQuestion(User user) {
+		return getQuestion(user, presentQuestionNumber);
+	}
+
+	@Override
+	public short getPresentQuestionNumber() {
+		return presentQuestionNumber;
 	}
 	
 }
