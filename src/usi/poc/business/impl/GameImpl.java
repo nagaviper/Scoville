@@ -101,7 +101,7 @@ public class GameImpl implements IGame {
 			int i = 0;
 			for ( usi.poc.business.impl.game.mapping.Question q : s.getQuestions().getQuestion() ) {
 				List<String> choices = q.getChoice();
-				questions[i++] = new Question(q.getLabel(), choices.get(0), choices.get(1), choices.get(2), choices.get(3), 0);
+				questions[i] = new Question(q.getLabel(), choices.get(0), choices.get(1), choices.get(2), choices.get(3), 0);
 				goodChoices[i++] = q.getGoodchoice();
 			}			
 			GameData gameData = new GameData(questions, goodChoices, p.getLogintimeout(), p.getSynchrotime(), p.getNbusersthreshold(),

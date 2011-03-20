@@ -1,0 +1,6 @@
+
+CAPSAICINE_URL_BASE=http://localhost:8080/capsaicine
+DEBUG=true
+LOG_DIRECTORY=./logs
+CLEAN_LOGS_ON_STARTUP=true
+COOKIES_DIRECTORY=./cookies
