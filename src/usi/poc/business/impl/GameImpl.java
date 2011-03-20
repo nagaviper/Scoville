@@ -138,12 +138,12 @@ public class GameImpl implements IGame {
 		System.out.println("GameImpl.getRanking()");
 		System.out.println("Not yet implemented...");
 		UserRanking r = new UserRanking();
-		r.setMy_score(12);
+		r.setScore(12);
 		r.setTop_scores(new UserRankingList());
 		r.getTop_scores().setMail(new String [] { "az", "er" , "ty" });
 		r.getTop_scores().setScores(new int [] { 21, 13, 32, 12, 4 });
-		r.setBefore_me(new UserRankingList());
-		r.getBefore_me().setMail(new String [] { "wx", "cv" , "bn" });
+		r.setBefore(new UserRankingList());
+		r.getBefore().setMail(new String [] { "wx", "cv" , "bn" });
 		return r;
 	}
 
