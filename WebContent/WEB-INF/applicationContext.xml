@@ -39,11 +39,14 @@
 	<bean id="gameCache" factory-bean="distributedCacheProvider" factory-method="createReplicatedCache">
 		<constructor-arg index="0" value="game" />
 	</bean>
-	
-	<bean id="game" name="game" class="usi.poc.business.impl.GameImpl" />
+
 	<bean id="longpoll" class="usi.poc.LongPollRestController">
         <property name="game" ref="game" />
     </bean>
+    
+    <!-- Services -->
+	
+	<bean id="game" class="usi.poc.business.impl.GameImpl" factory-method="getInstance"/>
 
 	<!-- DAO -->
 	

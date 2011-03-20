@@ -24,5 +24,4 @@
 	</bean>
 
 	<bean id="marshallingHttpMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
-
 </beans>

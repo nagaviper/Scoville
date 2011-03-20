@@ -29,6 +29,17 @@ import usi.poc.data.IUserDAO;
 
 public class GameImpl implements IGame {
 
+	private static IGame instance = new GameImpl();
+	
+	public static IGame getInstance() {
+		return instance;
+	}
+	
+	private GameImpl() {
+		
+	}
+
+
 	@Resource
 	private IUserDAO userDao;
 
@@ -46,10 +57,7 @@ public class GameImpl implements IGame {
 			e.printStackTrace();
 		}
 	}
-		
-	public GameImpl() {
-		
-	}
+
 	
 	@Override
 	public User getUser(String key) {
@@ -96,8 +104,8 @@ public class GameImpl implements IGame {
 				questions[i++] = new Question(q.getLabel(), choices.get(0), choices.get(1), choices.get(2), choices.get(3), 0);
 				goodChoices[i++] = q.getGoodchoice();
 			}			
-			GameData gameData = new GameData(questions, goodChoices, p.getLongpollingduration(), p.getNbusersthreshold(),
-												p.getQuestiontimeframe(), p.getNbquestions(), p.isFlushusertable());
+			GameData gameData = new GameData(questions, goodChoices, p.getLogintimeout(), p.getSynchrotime(), p.getNbusersthreshold(),
+				p.getQuestiontimeframe(), p.getNbquestions(), p.isFlushusertable());
 			
 			gameDataDao.createGame(gameData);
 		}
@@ -134,12 +142,12 @@ public class GameImpl implements IGame {
 		System.out.println("GameImpl.getRanking()");
 		System.out.println("Not yet implemented...");
 		UserRanking r = new UserRanking();
-		r.setMy_score(12);
+		r.setScore(12);
 		r.setTop_scores(new UserRankingList());
 		r.getTop_scores().setMail(new String [] { "az", "er" , "ty" });
 		r.getTop_scores().setScores(new int [] { 21, 13, 32, 12, 4 });
-		r.setBefore_me(new UserRankingList());
-		r.getBefore_me().setMail(new String [] { "wx", "cv" , "bn" });
+		r.setBefore(new UserRankingList());
+		r.getBefore().setMail(new String [] { "wx", "cv" , "bn" });
 		return r;
 	}
 
