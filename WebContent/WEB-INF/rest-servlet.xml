@@ -55,6 +55,11 @@
 		<constructor-arg index="0" value="game" />
 	</bean>
 
+
+	<!-- Services -->
+	
+	<bean id="game" class="usi.poc.business.impl.GameImpl" factory-method="getInstance"/>
+	
 	
 	<!-- DAO -->
 	

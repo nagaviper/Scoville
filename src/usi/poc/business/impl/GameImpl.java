@@ -28,8 +28,18 @@ import usi.poc.business.itf.UserRankingList;
 import usi.poc.data.IGameDataDAO;
 import usi.poc.data.IUserDAO;
 
-@Service
 public class GameImpl implements IGame {
+
+	private static IGame instance = new GameImpl();
+	
+	public static IGame getInstance() {
+		return instance;
+	}
+	
+	private GameImpl() {
+		
+	}
+
 
 	@Resource
 	private IUserDAO userDao;
@@ -47,10 +57,7 @@ public class GameImpl implements IGame {
 			e.printStackTrace();
 		}
 	}
-		
-	public GameImpl() {
-		
-	}
+
 	
 	@Override
 	public User getUser(String key) {
