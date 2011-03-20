@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.catalina.CometEvent;
 import org.apache.catalina.CometProcessor;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import usi.SessionUtils;
 import usi.poc.business.impl.GameImpl;
@@ -21,7 +22,9 @@ public class LongPollRestController extends HttpServlet implements CometProcesso
 
 	private static final long serialVersionUID = 1L;
 	private static Map<User, CometEvent> connexions = new HashMap<User, CometEvent>();
+	private static ObjectMapper jsonMapper = new ObjectMapper();
 	//private static QuestionTimer questionTimer;
+	private static int n = 0;
 	
 	private IGame game;
 	
@@ -38,26 +41,32 @@ public class LongPollRestController extends HttpServlet implements CometProcesso
 		if (event.getEventType() == CometEvent.EventType.BEGIN) {
 	        HttpServletRequest request = event.getHttpServletRequest();
 	        
-	        // Vérification de la validité de la requête
+	        // VÃ©rification de la validitÃ© de la requÃªte
 			int questionNumber = 0;
 	        String pathInfo = request.getPathInfo();
 	        if (pathInfo != null && pathInfo.length() > 1)
 	        	questionNumber = Integer.parseInt(pathInfo.substring(1));
-	        if (questionNumber != game.getPresentQuestionNumber()) {
+	        if (questionNumber == 0) {// != game.getPresentQuestionNumber()) {
 	        	event.getHttpServletResponse().setStatus(400);
 	        	event.close();
+	        	return;
 	        }
 
-	        // Vérification de la validité de l'utilisateur
+	        // VÃ©rification de la validitÃ© de l'utilisateur
 	        User user = SessionUtils.getLoggedUser(request, game);
 	        if (user == null) {
 	        	event.getHttpServletResponse().setStatus(401);
 	        	event.close();
+	        	return;
 	        }
 	        
-	        // Mise à jour de la liste des clients
+	        // Mise Ã  jour de la liste des clients
 	        synchronized(connexions) {
 	        	connexions.put(user, event);
+	        	if (connexions.size() == 10) {
+	        		n = questionNumber;
+	        		callback();
+	        	}
 	        }
 		}
 		else if (event.getEventType() == CometEvent.EventType.ERROR)
@@ -70,11 +79,10 @@ public class LongPollRestController extends HttpServlet implements CometProcesso
 		// On a atteint la fin de synchrotime
 		for (Map.Entry<User, CometEvent> entry : this.connexions.entrySet()) {
 			User user = entry.getKey();
-			Question q = game.getPresentQuestion(user);
-			String score = "monscore"; // à retirer
+			Question q = game.getQuestion(user, n);
 			CometEvent event = entry.getValue();
 			try {
-				event.getHttpServletResponse().getWriter().println(score);
+				jsonMapper.writeValue(event.getHttpServletResponse().getWriter(), q);
 				event.getHttpServletResponse().getWriter().flush();
 				event.close();
 			} catch (IOException e) {
@@ -85,7 +93,7 @@ public class LongPollRestController extends HttpServlet implements CometProcesso
 		
 		// On relance le minuteur
 		/*try {
-			questionTimer.wait(game.getGameData().getQuestiontimeframe()); // qui devrait déclencher synchrotime, etc
+			questionTimer.wait(game.getGameData().getQuestiontimeframe()); // qui devrait dÃ©clencher synchrotime, etc
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}*/

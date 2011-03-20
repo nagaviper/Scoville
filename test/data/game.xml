@@ -1,154 +1,154 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <usi:gamesession xmlns:usi="http://www.usi.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.usi.com gamesession.xsd ">
   <usi:questions>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="1">
+      <usi:label>Question 1 ?</usi:label>
+      <usi:choice>Reponse A a la question 1</usi:choice>
+      <usi:choice>Reponse B a la question 1</usi:choice>
+      <usi:choice>Reponse C a la question 1</usi:choice>
+      <usi:choice>Reponse D a la question 1</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="2">
+      <usi:label>Question 2 ?</usi:label>
+      <usi:choice>Reponse A a la question 2</usi:choice>
+      <usi:choice>Reponse B a la question 2</usi:choice>
+      <usi:choice>Reponse C a la question 2</usi:choice>
+      <usi:choice>Reponse D a la question 2</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="3">
+      <usi:label>Question 3 ?</usi:label>
+      <usi:choice>Reponse A a la question 3</usi:choice>
+      <usi:choice>Reponse B a la question 3</usi:choice>
+      <usi:choice>Reponse C a la question 3</usi:choice>
+      <usi:choice>Reponse D a la question 3</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="4">
+      <usi:label>Question 4 ?</usi:label>
+      <usi:choice>Reponse A a la question 4</usi:choice>
+      <usi:choice>Reponse B a la question 4</usi:choice>
+      <usi:choice>Reponse C a la question 4</usi:choice>
+      <usi:choice>Reponse D a la question 4</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="1">
+      <usi:label>Question 5 ?</usi:label>
+      <usi:choice>Reponse A a la question 5</usi:choice>
+      <usi:choice>Reponse B a la question 5</usi:choice>
+      <usi:choice>Reponse C a la question 5</usi:choice>
+      <usi:choice>Reponse D a la question 5</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="2">
+      <usi:label>Question 6 ?</usi:label>
+      <usi:choice>Reponse A a la question 6</usi:choice>
+      <usi:choice>Reponse B a la question 6</usi:choice>
+      <usi:choice>Reponse C a la question 6</usi:choice>
+      <usi:choice>Reponse D a la question 6</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="3">
+      <usi:label>Question 7 ?</usi:label>
+      <usi:choice>Reponse A a la question 7</usi:choice>
+      <usi:choice>Reponse B a la question 7</usi:choice>
+      <usi:choice>Reponse C a la question 7</usi:choice>
+      <usi:choice>Reponse D a la question 7</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="4">
+      <usi:label>Question 8 ?</usi:label>
+      <usi:choice>Reponse A a la question 8</usi:choice>
+      <usi:choice>Reponse B a la question 8</usi:choice>
+      <usi:choice>Reponse C a la question 8</usi:choice>
+      <usi:choice>Reponse D a la question 8</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="1">
+      <usi:label>Question 9 ?</usi:label>
+      <usi:choice>Reponse A a la question 9</usi:choice>
+      <usi:choice>Reponse B a la question 9</usi:choice>
+      <usi:choice>Reponse C a la question 9</usi:choice>
+      <usi:choice>Reponse D a la question 9</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="2">
+      <usi:label>Question 10 ?</usi:label>
+      <usi:choice>Reponse A a la question 10</usi:choice>
+      <usi:choice>Reponse B a la question 10</usi:choice>
+      <usi:choice>Reponse C a la question 10</usi:choice>
+      <usi:choice>Reponse D a la question 10</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="3">
+      <usi:label>Question 11 ?</usi:label>
+      <usi:choice>Reponse A a la question 11</usi:choice>
+      <usi:choice>Reponse B a la question 11</usi:choice>
+      <usi:choice>Reponse C a la question 11</usi:choice>
+      <usi:choice>Reponse D a la question 11</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="4">
+      <usi:label>Question 12 ?</usi:label>
+      <usi:choice>Reponse A a la question 12</usi:choice>
+      <usi:choice>Reponse B a la question 12</usi:choice>
+      <usi:choice>Reponse C a la question 12</usi:choice>
+      <usi:choice>Reponse D a la question 12</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="1">
+      <usi:label>Question 13 ?</usi:label>
+      <usi:choice>Reponse A a la question 13</usi:choice>
+      <usi:choice>Reponse B a la question 13</usi:choice>
+      <usi:choice>Reponse C a la question 13</usi:choice>
+      <usi:choice>Reponse D a la question 13</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="2">
+      <usi:label>Question 14 ?</usi:label>
+      <usi:choice>Reponse A a la question 14</usi:choice>
+      <usi:choice>Reponse B a la question 14</usi:choice>
+      <usi:choice>Reponse C a la question 14</usi:choice>
+      <usi:choice>Reponse D a la question 14</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="3">
+      <usi:label>Question 15 ?</usi:label>
+      <usi:choice>Reponse A a la question 15</usi:choice>
+      <usi:choice>Reponse B a la question 15</usi:choice>
+      <usi:choice>Reponse C a la question 15</usi:choice>
+      <usi:choice>Reponse D a la question 15</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="4">
+      <usi:label>Question 16 ?</usi:label>
+      <usi:choice>Reponse A a la question 16</usi:choice>
+      <usi:choice>Reponse B a la question 16</usi:choice>
+      <usi:choice>Reponse C a la question 16</usi:choice>
+      <usi:choice>Reponse D a la question 16</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="1">
+      <usi:label>Question 17 ?</usi:label>
+      <usi:choice>Reponse A a la question 17</usi:choice>
+      <usi:choice>Reponse B a la question 17</usi:choice>
+      <usi:choice>Reponse C a la question 17</usi:choice>
+      <usi:choice>Reponse D a la question 17</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="2">
+      <usi:label>Question 18 ?</usi:label>
+      <usi:choice>Reponse A a la question 18</usi:choice>
+      <usi:choice>Reponse B a la question 18</usi:choice>
+      <usi:choice>Reponse C a la question 18</usi:choice>
+      <usi:choice>Reponse D a la question 18</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="3">
+      <usi:label>Question 19 ?</usi:label>
+      <usi:choice>Reponse A a la question 19</usi:choice>
+      <usi:choice>Reponse B a la question 19</usi:choice>
+      <usi:choice>Reponse C a la question 19</usi:choice>
+      <usi:choice>Reponse D a la question 19</usi:choice>
     </usi:question>
-    <usi:question goodchoice="0">
-      <usi:label>usi:label</usi:label>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
-      <usi:choice>usi:choice</usi:choice>
+    <usi:question goodchoice="4">
+      <usi:label>Question 20 ?</usi:label>
+      <usi:choice>Reponse A a la question 20</usi:choice>
+      <usi:choice>Reponse B a la question 20</usi:choice>
+      <usi:choice>Reponse C a la question 20</usi:choice>
+      <usi:choice>Reponse D a la question 20</usi:choice>
     </usi:question>
   </usi:questions>
   <usi:parameters>
-    <usi:logintimeout>0</usi:logintimeout>
-    <usi:synchrotime>0</usi:synchrotime>
-    <usi:nbusersthreshold>0</usi:nbusersthreshold>
-    <usi:questiontimeframe>0</usi:questiontimeframe>
-    <usi:nbquestions>0</usi:nbquestions>
-    <usi:flushusertable>true</usi:flushusertable>
+    <usi:logintimeout>5</usi:logintimeout>
+    <usi:synchrotime>5</usi:synchrotime>
+    <usi:nbusersthreshold>10</usi:nbusersthreshold>
+    <usi:questiontimeframe>3</usi:questiontimeframe>
+    <usi:nbquestions>5</usi:nbquestions>
+    <usi:flushusertable>false</usi:flushusertable>
     <usi:trackeduseridmail>usi:trackeduseridmail</usi:trackeduseridmail>
   </usi:parameters>
 </usi:gamesession>

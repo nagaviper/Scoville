@@ -57,7 +57,7 @@ public class RESTController {
 	public void game(@RequestBody AdminGame adminGame) throws Exception {
 		if ( AUTHENTICATION_KEY.equals(adminGame.getAuthentication_key()) ) {
 			if ( ! game.createGame(adminGame.getParameters()) ) {
-				throw new BadRequestException();
+				throw new BadRequestException("A game already exist");
 			}
 		}
 		else {

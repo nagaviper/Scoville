@@ -1,5 +1,5 @@
 
-CAPSAICINE_URL_BASE=http://localhost:8080/capsaicine
+CAPSAICINE_URL_BASE=http://localhost:8082/capsaicine
 DEBUG=true
 LOG_DIRECTORY=./logs
 CLEAN_LOGS_ON_STARTUP=true
