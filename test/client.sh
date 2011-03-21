@@ -1,29 +1,76 @@
 
 . ./libtest.sh
 
+#
+# $1 - error code
+# $2 - error message
+#
+ExitOnError() {
+	echo ""
+	echo " ERROR $1 - $2"
+	echo ""	
+	exit $1
+}
+
 
 email=$1
 password=$2
 
 cookie=$COOKIES_DIRECTORY/$(echo $email | sed -e "s/@/./")'.cookie'
 
-LOG_FILE=$LOG_DIRECTORY/client-$email-$$.log
-
-if [ -e $LOG_FILE ] ; then
-	rm -f $LOG_FILE
+if [ -e $cookie ] ; then
+	rm -f $cookie
 fi
+
+LOG_FILE=$LOG_DIRECTORY/client-$(echo $email | sed -e "s/@/./")-$$.log
+
+#if [ -e $LOG_FILE ] ; then
+#	rm -f $LOG_FILE
+#fi
+
+echo "Login $email"
 
 Login $cookie $email $password >> $LOG_FILE
 
 HTTP_CODE=$(cat $LOG_FILE | tail -1)
-
 echo $HTTP_CODE
 
-GetQuestion $cookie 1
+if [ $HTTP_CODE -ne 201 ] ; then
+	ExitOnError $HTTP_CODE "for login request"
+fi
 
-#randomAnswer=$[ $RANDOM % 5 ]
+for (( i=1 ; i < 6 ; i++ )) ; do
+	
+	echo "Sending request for question $i"
+	GetQuestion $cookie $i >> $LOG_FILE
+	HTTP_CODE=$(cat $LOG_FILE | tail -1)
+	echo $HTTP_CODE
 
-#while true ; do
+	if [ $HTTP_CODE -ne 200 ] ; then
+		ExitOnError $HTTP_CODE "for question $i request"
+	fi
 	
+	a=$(($[ $RANDOM % 4 ] + 1))
+	echo "Sending answer $a for question $i"
+	AnswerQuestion $cookie $i $a >> $LOG_FILE
+	HTTP_CODE=$(cat $LOG_FILE | tail -1)
+	echo $HTTP_CODE
+
+	if [ $HTTP_CODE -ne 201 ] ; then
+		ExitOnError $HTTP_CODE "for answer $i request"
+	fi
 	
-#done
+done
+
+echo "Sending ranking request"
+AskRanking $cookie >> $LOG_FILE
+HTTP_CODE=$(cat $LOG_FILE | tail -1)
+echo $HTTP_CODE
+
+if [ $HTTP_CODE -ne 200 ] ; then
+	ExitOnError $HTTP_CODE "for ranking request"
+fi
+
+echo ""
+echo " ### Finished. No error occurred ###"
+echo ""
