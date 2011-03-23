@@ -1,8 +1,8 @@
 package usi.poc;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,9 +21,8 @@ import usi.poc.business.itf.User;
 public class LongPollRestController extends HttpServlet implements CometProcessor {
 
 	private static final long serialVersionUID = 1L;
-	private static Map<User, CometEvent> connexions = new HashMap<User, CometEvent>();
+	private static ConcurrentHashMap<User, CometEvent> connexions = new ConcurrentHashMap<User, CometEvent>();
 	private static ObjectMapper jsonMapper = new ObjectMapper();
-	//private static QuestionTimer questionTimer;
 	private static int n = 0;
 	
 	private IGame game;
@@ -38,6 +37,7 @@ public class LongPollRestController extends HttpServlet implements CometProcesso
 
 	@Override
 	public void event(CometEvent event) throws IOException, ServletException {
+		System.out.println("New question...");
 		if (event.getEventType() == CometEvent.EventType.BEGIN) {
 	        HttpServletRequest request = event.getHttpServletRequest();
 	        
@@ -59,11 +59,13 @@ public class LongPollRestController extends HttpServlet implements CometProcesso
 	        	event.close();
 	        	return;
 	        }
+	        System.out.println("    from " + user.getMail());
 	        
 	        // Mise à jour de la liste des clients
 	        synchronized(connexions) {
 	        	connexions.put(user, event);
-	        	if (connexions.size() == 10) {
+	        	System.out.println("    -> Clients number : " + connexions.size());
+	        	if (connexions.size() == 2) {
 	        		n = questionNumber;
 	        		callback();
 	        	}

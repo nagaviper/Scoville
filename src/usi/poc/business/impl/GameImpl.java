@@ -9,6 +9,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import usi.poc.QuestionTimer;
 import usi.poc.ScoreCalculator;
 import usi.poc.business.impl.game.mapping.Parametertype;
 import usi.poc.business.impl.game.mapping.Sessiontype;
@@ -187,5 +188,9 @@ public class GameImpl implements IGame {
 		return presentQuestionNumber;
 	}
 	
+	@Override
+	public void login(User user) {
+		user.setLogged();
+		QuestionTimer.getInstance().conditionalWait(gameDataDao.getGame().getLogintimeout());
+	}
 }
-

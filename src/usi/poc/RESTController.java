@@ -77,7 +77,7 @@ public class RESTController {
 			throw new BadRequestException();
 		else {
 			response.addCookie(new Cookie(SessionUtils.SESSION_KEY, loginInformation.getMail()));
-			user.setLogged();
+			game.login(user);
 		}
 	}
 	

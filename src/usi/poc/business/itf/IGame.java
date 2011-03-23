@@ -42,5 +42,6 @@ public interface IGame {
 	public AdminUserAnswers getUserAnswers(AdminUserRequest request);
 
 	public AdminUserAnswer getUserAnswer(AdminUserRequest request, int n);
-
+	
+	public void login(User user);
 }
