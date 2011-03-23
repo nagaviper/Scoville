@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="capsaicine" default="help" basedir=".">
+
+	<!--
+	<property name="tc.server.dir" value="${user.home}/springsource/tc-server-developer-2.1.1.RELEASE"/>
+	<property name="tomcat.server.dir" value="${tc.server.dir}/tomcat-6.0.29.C.RELEASE"/>
+	-->
+
+	<property name="javac.debug" value="true"/>
+
+	<property name="tc.server.dir" value="${user.home}/vfabric/tcserver"/>
+	<property name="tomcat.server.dir" value="${tc.server.dir}/tomcat-6.0.29.B.RELEASE"/>
+	<property name="tomcat.deploy.dir" value="${tc.server.dir}/servers/tc01/webapps"/>
+	<property name="tomcat.conf.dir" value="${tc.server.dir}/servers/tc01/conf"/>
+
+	<property name="build.dir" value="build"/>
+	<property name="src.dir" value="src"/>
+	<property name="webcontent.dir" value="WebContent"/>
+	<property name="conf.serveur" value="conf"/>
+		
+	<property name="jar.file.name" value="capsaicine.jar"/>
+	<property name="war.dir" value="${build.dir}"/>
+	<property name="war.file.name" value="capsaicine.war"/>
+	<property name="war.file.path" value="${war.dir}/${war.file.name}"/>
+
+	
+	<target name="help">
+		<echo></echo>
+		<echo> targets :</echo>
+		<echo></echo>
+		<echo>    build               -  build java sources in ${build.dir}</echo>
+		<echo>    package             -  packaging application in ${war.file.path}</echo>
+		<echo>    deploy              -  deploy on vfabric1, vfabric2, vfabric3 and vfabric4</echo>
+		<echo>    clean               -  clean all built and package en ${build.dir}</echo>
+		<echo>    update              -  update local git repository running 'git pull'</echo>
+		<echo></echo>
+		<echo>    update.and.deploy   -  call update and deploy</echo>
+		<echo>    update.and.package  -  call update and package</echo>
+		<echo></echo>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.dir}/classes" quiet="true"/>
+		<delete dir="${build.dir}/lib" quiet="true"/>
+		<mkdir dir="${build.dir}/classes"/>
+		<mkdir dir="${build.dir}/lib"/>
+	</target>
+	
+	<target name="build" depends="clean">
+		<echo>Compiling java source files</echo>
+		<javac source="1.6" encoding="utf8" debug="${javac.debug}" srcdir="${src.dir}" destdir="${build.dir}/classes">
+			<classpath>
+				<fileset dir="${webcontent.dir}/WEB-INF/lib">
+					<include name="*.jar"/>
+				</fileset>
+				<fileset dir="${tomcat.server.dir}/lib">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+	
+	<target name="package" depends="build">
+		<echo>Creating jar file ${build.dir}/lib/${jar.file.name}</echo>
+		<jar destfile="${build.dir}/lib/${jar.file.name}">
+			<fileset dir="${build.dir}/classes"></fileset>
+		</jar>	
+		<echo>Creating war file ${war.file.path}</echo>
+		<war destfile="${war.file.path}" needxmlfile="false">
+			<fileset dir="WebContent"/>
+			<lib dir="${build.dir}/lib"/>
+		</war>
+	</target>
+
+	<target name="deploy" depends="package">
+		<ant target="copy.to.remote.server">
+			<property name="hostname" value="vfabric1"/>
+		</ant>
+		<ant target="copy.to.remote.server">
+			<property name="hostname" value="vfabric2"/>
+		</ant>
+		<ant target="copy.to.remote.server">
+			<property name="hostname" value="vfabric3"/>
+		</ant>
+		<ant target="copy.to.remote.server">
+			<property name="hostname" value="vfabric4"/>
+		</ant>
+	</target>
+
+	<target name="clean.host">
+		<echo>[${hostname}] Delete ${tomcat.deploy.dir}/${war.file.name}</echo>
+		<echo>[${hostname}] Delete ${tomcat.conf.dir}/server.xml</echo>
+		<exec executable="ssh">
+			<arg value="${hostname}"/>
+			<arg value="rm"/>
+			<arg value="-f"/>
+			<arg value="${tomcat.deploy.dir}/${war.file.name}"/>
+			<arg value="${tomcat.conf.dir}/server.xml"/>
+		</exec>	
+	</target>
+	
+	<target name="copy.to.remote.server" if="hostname" depends="clean.host">
+		<echo>[${hostname}] Copy ${war.file.path} to ${tomcat.deploy.dir}</echo>
+		<exec executable="scp">
+			<arg value="${war.file.path}"/>
+			<arg value="${hostname}:${tomcat.deploy.dir}"/>
+		</exec>			
+		<echo>[${hostname}] Copy ${conf.serveur}/server.xml to ${tomcat.conf.dir}</echo>
+		<exec executable="scp">
+			<arg value="${conf.serveur}/server.xml"/>
+			<arg value="${hostname}:${tomcat.conf.dir}"/>
+		</exec>
+	</target>
+	
+	<target name="update">
+		<echo>Update local git repository Scoville</echo>
+		<exec executable="git">
+			<arg value="pull"/>
+		</exec>
+	</target>
+	
+	<target name="update.and.deploy" depends="update, deploy"/>
+	
+	<target name="update.and.package" depends="update, package"/>
+	
+</project>
