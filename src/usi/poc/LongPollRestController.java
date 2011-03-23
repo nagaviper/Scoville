@@ -91,7 +91,9 @@ public class LongPollRestController extends HttpServlet implements CometProcesso
 				e.printStackTrace();
 			}
 		}
-		this.connexions.clear();
+        synchronized(connexions) {
+        	connexions.clear();
+        }
 		
 		// On relance le minuteur
 		/*try {

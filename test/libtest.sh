@@ -29,6 +29,7 @@ fi
 
 #
 # $1 - URL
+# $2 - Cookie file
 #
 GET ()
 {
@@ -41,19 +42,17 @@ GET ()
         elif [ "$2" != "nocookie" ] ; then
         	COOKIE='-c '$2
         fi
-#        curl -sL -w "%{http_code}\\n" -H "Accept: application/json" -X GET "$1" -o $OUTPUT
-        CMD='curl -sL -w "%{http_code}\\n" -H "Accept: application/json" -X GET "'$1'" -o '$OUTPUT   	
+        CMD='curl '$COOKIE' -sL -w "%{http_code}\\n" -H "Accept: application/json" -X GET "'$1'" -o '$OUTPUT   	
     	echo $CMD > get_curl_$$
         if [ -n $DEBUG ] ; then
 	        cat get_curl_$$
         fi
         HTTP_CODE=$(sh get_curl_$$ | head -1)        
         rm -f get_curl_$$
-        	    if [ -e $OUTPUT -a -n $DEBUG ] ; then
+        if [ -e $OUTPUT -a -n $DEBUG ] ; then
 		    cat $OUTPUT
 		    rm -f $OUTPUT
 	    fi
-	    echo $HTTP_CODE
 	    if [ -e $OUTPUT ] ; then
 	        echo ""
             cat $OUTPUT
@@ -61,6 +60,8 @@ GET ()
             echo ""
             rm -f OUTPUT
         fi
+	    echo ''
+	    echo $HTTP_CODE
     fi    
 }
 
@@ -81,7 +82,7 @@ POST ()
         fi
         COOKIE=''
         if [ -e $2 ] ; then
-        	COOKIE='-c '$2 '-b '$2
+        	COOKIE='-b '$2
         elif [ "$2" != "nocookie" ] ; then
         	COOKIE='-c '$2
         fi
@@ -140,6 +141,24 @@ Login () {
 # $2 - question number
 #
 GetQuestion() {
-	GET $CAPSAICINE_URL_BASE/api/question/$2 $1
+	GET $CAPSAICINE_URL_BASE_LONGPOLLING/api/question/$2 $1
 }
 
+
+#
+# $1 - cookie file
+#
+# $2 - question number
+# $3 - answer number
+#
+AnswerQuestion() {
+	POST $CAPSAICINE_URL_BASE/api/answer/$2 $1 "{ \"answer\" : $3 }	"
+}
+
+
+#
+# $1 - cookie file
+#
+AskRanking() {
+	GET $CAPSAICINE_URL_BASE/api/ranking $1
+}
