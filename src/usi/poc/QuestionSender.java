@@ -1,7 +1,6 @@
 package usi.poc;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.Map;
 
 import org.apache.catalina.CometEvent;
@@ -11,19 +10,24 @@ import usi.poc.business.impl.GameImpl;
 import usi.poc.business.itf.Question;
 import usi.poc.business.itf.User;
 
-public class QuestionSender implements ITimerThrower {
+public class QuestionSender {
 	private static QuestionSender instance = new QuestionSender();
 	private static ObjectMapper jsonMapper = new ObjectMapper();
+	private static int sent = 0;
 
 	public static QuestionSender getInstance() {
 		return instance;
 	}
 
-	@Override
-	public synchronized void callback() {
+	public synchronized void send(int n) {
+		// On se protège contre le double-envoi
+		if (sent == n)
+			return;
+		sent = n;
+
+		// On envoie
 		System.out.println("QuestionSender callback");
 		QuestionTimer.getInstance().cancel();
-		int n = GameImpl.getInstance().getPresentQuestionNumber();
 		for (Map.Entry<User, CometEvent> entry : Connexions.getMap().entrySet()) {
 			User user = entry.getKey();
 			Question q = GameImpl.getInstance().getQuestion(user, n);
@@ -38,6 +42,8 @@ public class QuestionSender implements ITimerThrower {
 			}
 		}
 		Connexions.getMap().clear();
-		GameImpl.getInstance().beginQuestionTimeFrame();
+		
+		// On s'apprête à recevoir les réponses
+		GameImpl.getInstance().beginQuestionTimeFrame(n);
 	}
 }

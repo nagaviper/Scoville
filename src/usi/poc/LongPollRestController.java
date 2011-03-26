@@ -17,7 +17,6 @@ import usi.poc.business.itf.User;
 public class LongPollRestController extends HttpServlet implements CometProcessor {
 
 	private static final long serialVersionUID = 1L;
-	private static int n = 0;
 	
 	private IGame game;
 	
@@ -31,8 +30,8 @@ public class LongPollRestController extends HttpServlet implements CometProcesso
 
 	@Override
 	public void event(CometEvent event) throws IOException, ServletException {
-		System.out.println("New question...");
 		if (event.getEventType() == CometEvent.EventType.BEGIN) {
+			System.out.println("New question...");
 	        HttpServletRequest request = event.getHttpServletRequest();
 	        
 	        // Vérification de la validité de la requête
@@ -40,8 +39,8 @@ public class LongPollRestController extends HttpServlet implements CometProcesso
 	        String pathInfo = request.getPathInfo();
 	        if (pathInfo != null && pathInfo.length() > 1)
 	        	questionNumber = Integer.parseInt(pathInfo.substring(1));
-	        if (questionNumber != game.getPresentQuestionNumber()) {
-	        	System.out.println("Fenêtre temporelle incorrecte : demande=" + questionNumber + " au lieu de " + game.getPresentQuestionNumber());
+	        if (questionNumber != game.getGameData().getPresentQuestionNumber()) {
+	        	System.out.println("Fenêtre temporelle incorrecte : demande=" + questionNumber + " au lieu de " + game.getGameData().getPresentQuestionNumber());
 	        	event.getHttpServletResponse().setStatus(400);
 	        	event.close();
 	        	return;
@@ -60,9 +59,9 @@ public class LongPollRestController extends HttpServlet implements CometProcesso
 	        // Mise à jour de la liste des clients
 	        Connexions.getMap().put(user, event);
 	        
-	        // Déclenchement du jeu si tous les clients sont connectés
-	        if (game.getGameData().getNbusersthreshold() == Connexions.getMap().size())
-	        	QuestionSender.getInstance().callback();
+	        // Tous les clients ont demandé la première question
+	        if (questionNumber == 1 && game.getGameData().getNbusersthreshold() == Connexions.getMap().size())
+	        	QuestionSender.getInstance().send(1);
 		}
 		else if (event.getEventType() == CometEvent.EventType.ERROR)
 			event.close();

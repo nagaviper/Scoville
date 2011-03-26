@@ -30,10 +30,6 @@ public interface IGame {
 
 	public Question getQuestion(User user, int n);
 	
-	public Question getPresentQuestion(User user);
-	public int getPresentQuestionNumber();
-	public void incrPresentQuestionNumber(); // Attention aux multi-threads...
-	
 	public AnswerFeedback answerQuestion(User user, int n, Answer answer);
 	
 	public UserRanking getRanking(User user);
@@ -47,6 +43,6 @@ public interface IGame {
 	public void login(User user);
 	
 	public void beginLoginTimeout();
-	public void beginQuestionTimeFrame();
-	public void beginSynchroTime();
+	public void beginQuestionTimeFrame(int n);
+	public void beginSynchroTime(int n);
 }

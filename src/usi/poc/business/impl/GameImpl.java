@@ -4,6 +4,7 @@ import java.io.StringReader;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.annotation.Resource;
 import javax.xml.bind.JAXBContext;
@@ -11,9 +12,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import usi.poc.QuestionFinisher;
 import usi.poc.QuestionSender;
-import usi.poc.QuestionTimer;
 import usi.poc.ScoreCalculator;
 import usi.poc.business.impl.game.mapping.Parametertype;
 import usi.poc.business.impl.game.mapping.Sessiontype;
@@ -52,7 +51,6 @@ public class GameImpl implements IGame {
 	private IGameDataDAO gameDataDao;
 	
 	private static Unmarshaller gameUnmarshaller;
-	private static int presentQuestionNumber = 0;
 	
 	static {
 		try {
@@ -131,11 +129,15 @@ public class GameImpl implements IGame {
 
 	@Override
 	public AnswerFeedback answerQuestion(User user, int n, Answer answer) {
-		int userChoice = answer.getAnswer();
-		int goodChoice = gameDataDao
-			.getGame()
-			.getGoodChoice(n);
-		boolean good = (userChoice == goodChoice);
+		GameData gameData = gameDataDao.getGame();
+		int goodChoice = gameData.getGoodChoice(n);
+		boolean good;
+		if (n != gameData.getPresentAnswerNumber())
+			good = false;
+		else {
+			int userChoice = answer.getAnswer();
+			good = (userChoice == goodChoice);
+		}
 		ScoreCalculator.calculate(user, n, good);
 		String goodAnswer = gameDataDao.getGame().getQuestion(n).getAnswer(goodChoice);
 		return new AnswerFeedback(good, goodAnswer, user.getScore());
@@ -146,6 +148,8 @@ public class GameImpl implements IGame {
 	public UserRanking getRanking(User user) {
 		System.out.println("GameImpl.getRanking()");
 		System.out.println("Not yet implemented...");
+
+		// TODO : vérifier gameData.isGameFinished()
 		UserRanking r = new UserRanking();
 		r.setScore(12);
 		r.setTop_scores(new UserRankingList());
@@ -181,57 +185,71 @@ public class GameImpl implements IGame {
 	}
 
 	@Override
-	public Question getPresentQuestion(User user) {
-		return getQuestion(user, presentQuestionNumber);
-	}
-
-	@Override
-	public int getPresentQuestionNumber() {
-		return presentQuestionNumber;
-	}
-	
-	@Override
 	public void login(User user) {
 		user.setLogged();
-		this.beginLoginTimeout();
+		// TODO : verrou distribué pour éviter de lancer plusieurs minuteurs
+		GameData gameData = gameDataDao.getGame();
+		synchronized(gameData) {
+			if (gameDataDao.getGame().isGameStarted() == false)
+				this.beginLoginTimeout();
+		}
 	}
 
-	@Override
-	public void incrPresentQuestionNumber() {
-		presentQuestionNumber++;
-	}
-
-	@SuppressWarnings("unused")
 	@Override
 	public void beginLoginTimeout() {
-		Timer timer = new Timer();
-		// timer.schedule(task, time);
-		// Plutot comme ceci !
 		System.out.println(new Date().toString() + ": beginLoginTimeout");
-		QuestionTimer.getInstance().setThrower(QuestionSender.getInstance());
-		QuestionTimer.getInstance().conditionalWait(gameDataDao.getGame().getLogintimeout() * 1000);
-		presentQuestionNumber = 1;
+		final GameData gameData = gameDataDao.getGame();
+		gameData.startGame();
+
+		Timer timer = new Timer();
+		int timeout = gameData.getLogintimeout() * 1000;
+		Date date = new Date(System.currentTimeMillis() + timeout);
+		timer.schedule(new TimerTask() {
+			public void run() {
+				QuestionSender.getInstance().send(1);
+	        }
+		}, date);
 	}
 
 	@Override
-	public void beginQuestionTimeFrame() {
-		System.out.println(new Date().toString() + ": beginQuestionTimeFrame");
-		QuestionTimer.getInstance().setThrower(QuestionFinisher.getInstance());
-		try {
-			QuestionTimer.getInstance().wait(gameDataDao.getGame().getQuestiontimeframe() * 1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+	public void beginQuestionTimeFrame(final int n) {
+		System.out.println(new Date().toString() + ": beginQuestionTimeFrame for question " + n);
+		final GameData gameData = gameDataDao.getGame();
+		gameData.setPresentAnswerNumber(n);
+
+		if (n > gameData.getNbquestions())
+			gameData.setPresentQuestionNumber(0);
+		else
+			gameData.setPresentQuestionNumber(n+1);
+
+		Timer timer = new Timer();
+		int timeout = gameData.getQuestiontimeframe() * 1000;
+		Date date = new Date(System.currentTimeMillis() + timeout);
+		timer.schedule(new TimerTask() {
+			public void run() {
+				GameImpl.getInstance().beginSynchroTime(n+1);
+	        }
+		}, date);
 	}
 
 	@Override
-	public void beginSynchroTime() {
-		System.out.println(new Date().toString() + ": beginSynchroTime");
-		QuestionTimer.getInstance().setThrower(QuestionSender.getInstance());
-		try {
-			QuestionTimer.getInstance().wait(gameDataDao.getGame().getSynchrotime() * 1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+	public void beginSynchroTime(final int n) {
+		System.out.println(new Date().toString() + ": beginSynchroTime for question " + n);
+		final GameData gameData = gameDataDao.getGame();
+		gameData.setPresentAnswerNumber(0);
+
+		Timer timer = new Timer();
+		int timeout = gameData.getQuestiontimeframe() * 1000;
+		Date date = new Date(System.currentTimeMillis() + timeout);
+		timer.schedule(new TimerTask() {
+			public void run() {
+				if (n  > gameData.getNbquestions()) {
+					gameData.endGame();
+					System.out.println(new Date().toString() + ": end of the game, waiting now for ranking requests");
+				}
+				else
+					QuestionSender.getInstance().send(n);
+	        }
+		}, date);
 	}
 }

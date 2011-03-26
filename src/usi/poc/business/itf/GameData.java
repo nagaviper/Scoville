@@ -14,6 +14,10 @@ public class GameData implements IQuizzObject {
 	private int questiontimeframe;
 	private int nbquestions;
 	private boolean flushusertable;
+	private boolean isGameStarted = false;
+	private boolean isGameFinished = false;
+	private int presentQuestionNumber = 0;
+	private int presentAnswerNumber = 0;
 	
 	/**
 	 * unused
@@ -89,4 +93,36 @@ public class GameData implements IQuizzObject {
 		return trackeduseridmail;
 	}
 
+	public boolean isGameStarted() {
+		return isGameStarted;
+	}
+	
+	public void startGame() {
+		this.isGameStarted = true;
+		this.presentQuestionNumber = 1;
+	}
+	
+	public boolean isGameFinished() {
+		return isGameFinished;
+	}
+	
+	public void endGame() {
+		this.isGameFinished = true;
+	}
+
+	public void setPresentQuestionNumber(int presentQuestionNumber) {
+		this.presentQuestionNumber = presentQuestionNumber;
+	}
+
+	public int getPresentQuestionNumber() {
+		return presentQuestionNumber;
+	}
+
+	public void setPresentAnswerNumber(int presentAnswerNumber) {
+		this.presentAnswerNumber = presentAnswerNumber;
+	}
+
+	public int getPresentAnswerNumber() {
+		return presentAnswerNumber;
+	}
 }

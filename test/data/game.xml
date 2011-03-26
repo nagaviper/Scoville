@@ -145,7 +145,7 @@
   <usi:parameters>
     <usi:logintimeout>5</usi:logintimeout>
     <usi:synchrotime>5</usi:synchrotime>
-    <usi:nbusersthreshold>10</usi:nbusersthreshold>
+    <usi:nbusersthreshold>2</usi:nbusersthreshold>
     <usi:questiontimeframe>3</usi:questiontimeframe>
     <usi:nbquestions>5</usi:nbquestions>
     <usi:flushusertable>false</usi:flushusertable>
