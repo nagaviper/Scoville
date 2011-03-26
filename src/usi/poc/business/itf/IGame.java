@@ -31,7 +31,8 @@ public interface IGame {
 	public Question getQuestion(User user, int n);
 	
 	public Question getPresentQuestion(User user);
-	public short getPresentQuestionNumber();
+	public int getPresentQuestionNumber();
+	public void incrPresentQuestionNumber(); // Attention aux multi-threads...
 	
 	public AnswerFeedback answerQuestion(User user, int n, Answer answer);
 	
@@ -44,4 +45,8 @@ public interface IGame {
 	public AdminUserAnswer getUserAnswer(AdminUserRequest request, int n);
 	
 	public void login(User user);
+	
+	public void beginLoginTimeout();
+	public void beginQuestionTimeFrame();
+	public void beginSynchroTime();
 }

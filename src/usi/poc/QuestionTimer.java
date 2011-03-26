@@ -17,17 +17,24 @@ public class QuestionTimer extends TimerTask {
 
 	@Override
 	public void run() {
-		thrower.callback();
+		System.out.println("QuestionTimer run");
+		if (thrower != null)
+			thrower.callback();
 	}
 	
-	public void conditionalWait(int logintimeout) {
-		// Double-checked lock à revoir
+	@Override
+	public boolean cancel() {
+		iswaiting = false;
+		return super.cancel();
+	}
+
+	public void conditionalWait(int timeout) {
 		if (! iswaiting) {
 			synchronized(instance) {
 				if (! iswaiting) {
 					try {
 						iswaiting = true;
-						this.wait(logintimeout);
+						this.wait(timeout);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}

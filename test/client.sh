@@ -1,3 +1,4 @@
+#!/bin/bash
 
 . ./libtest.sh
 
@@ -39,7 +40,8 @@ if [ $HTTP_CODE -ne 201 ] ; then
 	ExitOnError $HTTP_CODE "for login request"
 fi
 
-for (( i=1 ; i < 6 ; i++ )) ; do
+#for (( i=1 ; i < 6 ; i++ )) ; do
+for i in 1 2 3 4 5 ; do
 	
 	echo "Sending request for question $i"
 	GetQuestion $cookie $i >> $LOG_FILE

@@ -1,3 +1,4 @@
+#!/bin/bash
 
 #
 # $1 - authentication key
@@ -24,4 +25,4 @@ else
 fi
 echo ""
 
-exit $HTTP_CODE
+#exit $HTTP_CODE

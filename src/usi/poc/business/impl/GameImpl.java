@@ -1,7 +1,9 @@
 package usi.poc.business.impl;
 
 import java.io.StringReader;
+import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 
 import javax.annotation.Resource;
 import javax.xml.bind.JAXBContext;
@@ -9,6 +11,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import usi.poc.QuestionFinisher;
+import usi.poc.QuestionSender;
 import usi.poc.QuestionTimer;
 import usi.poc.ScoreCalculator;
 import usi.poc.business.impl.game.mapping.Parametertype;
@@ -48,13 +52,12 @@ public class GameImpl implements IGame {
 	private IGameDataDAO gameDataDao;
 	
 	private static Unmarshaller gameUnmarshaller;
-	private static short presentQuestionNumber = 0;
+	private static int presentQuestionNumber = 0;
 	
 	static {
 		try {
 			gameUnmarshaller = JAXBContext.newInstance(Sessiontype.class.getPackage().getName()).createUnmarshaller();
 		} catch (JAXBException e) {
-			// TODO - Very big problem !!!
 			e.printStackTrace();
 		}
 	}
@@ -111,7 +114,6 @@ public class GameImpl implements IGame {
 			gameDataDao.createGame(gameData);
 		}
 		catch (JAXBException e) {
-			// TODO - Very big problem !!!
 			e.printStackTrace();
 		}
 		return true;
@@ -184,13 +186,52 @@ public class GameImpl implements IGame {
 	}
 
 	@Override
-	public short getPresentQuestionNumber() {
+	public int getPresentQuestionNumber() {
 		return presentQuestionNumber;
 	}
 	
 	@Override
 	public void login(User user) {
 		user.setLogged();
-		QuestionTimer.getInstance().conditionalWait(gameDataDao.getGame().getLogintimeout());
+		this.beginLoginTimeout();
+	}
+
+	@Override
+	public void incrPresentQuestionNumber() {
+		presentQuestionNumber++;
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	public void beginLoginTimeout() {
+		Timer timer = new Timer();
+		// timer.schedule(task, time);
+		// Plutot comme ceci !
+		System.out.println(new Date().toString() + ": beginLoginTimeout");
+		QuestionTimer.getInstance().setThrower(QuestionSender.getInstance());
+		QuestionTimer.getInstance().conditionalWait(gameDataDao.getGame().getLogintimeout() * 1000);
+		presentQuestionNumber = 1;
+	}
+
+	@Override
+	public void beginQuestionTimeFrame() {
+		System.out.println(new Date().toString() + ": beginQuestionTimeFrame");
+		QuestionTimer.getInstance().setThrower(QuestionFinisher.getInstance());
+		try {
+			QuestionTimer.getInstance().wait(gameDataDao.getGame().getQuestiontimeframe() * 1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void beginSynchroTime() {
+		System.out.println(new Date().toString() + ": beginSynchroTime");
+		QuestionTimer.getInstance().setThrower(QuestionSender.getInstance());
+		try {
+			QuestionTimer.getInstance().wait(gameDataDao.getGame().getSynchrotime() * 1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }
