@@ -9,6 +9,9 @@
 				<class-name>usi.poc.data.UsersCacheListener</class-name>
 			</cache-listener>
 		</region-attributes>
+		<index name="score_idx">
+			<functional from-clause="/users" expression="score"/>
+		</index>
 	</region>
 
 </cache>

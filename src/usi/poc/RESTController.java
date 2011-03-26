@@ -115,6 +115,8 @@ public class RESTController {
 		User user = SessionUtils.getLoggedUser(request, game);
 		if (user == null)
 			throw new UnauthorizedException();
+		if (! game.getGameData().isGameFinished())
+			throw new BadRequestException();
 		return game.getRanking(user);
 	}
 	

@@ -52,4 +52,10 @@
 	
 	<bean id="userDAO" class="${dao.user}" />
 	<bean id="gameDataDAO" class="${dao.gamedata}" />
+	
+	<!-- Bypass pour eviter que Spring coupe les URIs avant le caractere "."  -->
+	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+    	<property name="useDefaultSuffixPattern" value="false" />
+	</bean>
+	
 </beans>

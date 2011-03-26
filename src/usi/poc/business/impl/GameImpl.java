@@ -1,6 +1,7 @@
 package usi.poc.business.impl;
 
 import java.io.StringReader;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -14,6 +15,7 @@ import javax.xml.bind.Unmarshaller;
 
 import usi.poc.QuestionSender;
 import usi.poc.ScoreCalculator;
+import usi.poc.UserRankingListBuilder;
 import usi.poc.business.impl.game.mapping.Parametertype;
 import usi.poc.business.impl.game.mapping.Sessiontype;
 import usi.poc.business.itf.AdminUserAnswer;
@@ -146,17 +148,15 @@ public class GameImpl implements IGame {
 	
 	@Override
 	public UserRanking getRanking(User user) {
-		System.out.println("GameImpl.getRanking()");
-		System.out.println("Not yet implemented...");
-
-		// TODO : vérifier gameData.isGameFinished()
+		Collection<User> top = userDao.getHundredBestUsers();
+		List<User> before = userDao.getFiftyBeforeUsers();
+		List<User> after = userDao.getFiftyAfterUsers();
+		
 		UserRanking r = new UserRanking();
-		r.setScore(12);
-		r.setTop_scores(new UserRankingList());
-		r.getTop_scores().setMail(new String [] { "az", "er" , "ty" });
-		r.getTop_scores().setScores(new int [] { 21, 13, 32, 12, 4 });
-		r.setBefore(new UserRankingList());
-		r.getBefore().setMail(new String [] { "wx", "cv" , "bn" });
+		r.setScore(user.getScore());
+		r.setTop_scores(UserRankingListBuilder.build(top));
+		r.setBefore(UserRankingListBuilder.build(before));
+		r.setAfter(UserRankingListBuilder.build(after));
 		return r;
 	}
 
