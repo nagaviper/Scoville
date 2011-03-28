@@ -1,6 +1,7 @@
 package usi.poc;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Map;
 
 import org.apache.catalina.CometEvent;
@@ -33,10 +34,13 @@ public class QuestionSender {
 			Question q = GameImpl.getInstance().getQuestion(user, n);
 			CometEvent event = entry.getValue();
 			try {
-				jsonMapper.writeValue(event.getHttpServletResponse()
-						.getWriter(), q);
-				event.getHttpServletResponse().getWriter().flush();
-				event.close();
+				PrintWriter writer = event.getHttpServletResponse()
+					.getWriter();
+				if (writer != null) {
+					jsonMapper.writeValue(writer, q);
+					writer.flush();
+					event.close();
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -54,7 +54,7 @@ public class GameData implements IQuizzObject {
 	}
 
 	public Question getQuestion(int i) {
-		return question[i];
+		return question[i - 1];
 	}
 	
 	public Question[] getQuestion() {
@@ -62,7 +62,7 @@ public class GameData implements IQuizzObject {
 	}
 	
 	public int getGoodChoice(int i) {
-		return goodChoice[i];
+		return goodChoice[i - 1];
 	}
 
 	public int getLogintimeout() {

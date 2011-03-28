@@ -1,7 +1,8 @@
 
-CAPSAICINE_URL_BASE=http://localhost:8082/capsaicine
+CAPSAICINE_URL_BASE=http://localhost:8081/capsaicine
 CAPSAICINE_URL_BASE_LONGPOLLING=http://localhost:8081/capsaicine
 DEBUG=true
 LOG_DIRECTORY=./logs
 CLEAN_LOGS_ON_STARTUP=false ### DO NOT SET TO TRUE ### THERE IS A FATAL BUG TO FIX ###
 COOKIES_DIRECTORY=./cookies
+GAMEFILEPATH=data/game.xml

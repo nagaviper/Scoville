@@ -34,15 +34,15 @@ public interface IGame {
 	
 	public UserRanking getRanking(User user);
 	
-	public AdminUserRanking getUserRanking(AdminUserRequest request);
-	
-	public AdminUserAnswers getUserAnswers(AdminUserRequest request);
+	public AdminUserAnswers getUserAnswers(User user);
 
-	public AdminUserAnswer getUserAnswer(AdminUserRequest request, int n);
+	public AdminUserAnswer getUserAnswer(User user, int n);
 	
 	public void login(User user);
 	
 	public void beginLoginTimeout();
 	public void beginQuestionTimeFrame(int n);
 	public void beginSynchroTime(int n);
+
+	public void doTimer();
 }
