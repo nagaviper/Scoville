@@ -24,7 +24,6 @@ import usi.poc.business.itf.Answer;
 import usi.poc.business.itf.AnswerFeedback;
 import usi.poc.business.itf.GameData;
 import usi.poc.business.itf.IGame;
-import usi.poc.business.itf.IQuizzObject;
 import usi.poc.business.itf.Question;
 import usi.poc.business.itf.User;
 import usi.poc.business.itf.UserAnswer;
@@ -145,15 +144,14 @@ public class GameImpl implements IGame {
 		else {
 			int userChoice = answer.getAnswer();
 			good = (userChoice == goodChoice);
-			System.out.println("Bonne reponse de " + user.getMail() + " ? " + good);
-			System.out.println("Score precedent : " + user.getScore());
 			
 			// Persistance de la réponse seulement si elle est valide
 			answerDao.put(user.getMail() + n, new UserAnswer(user.getMail(), n, userChoice));
 		}
 		ScoreCalculator.calculate(user, n, good);
+		user.setLastAnswer(n);
 
-		System.out.println("Nouveau score : " + user.getScore());
+		System.out.println("Nouveau score de " + user.getMail() + " : " + user.getScore());
 		String goodAnswer = gameDataDao.getGame().getQuestion(n).getAnswer(goodChoice);
 		return new AnswerFeedback(good, goodAnswer, user.getScore());
 	}
@@ -284,6 +282,7 @@ public class GameImpl implements IGame {
 	@Override
 	public void doTimer() {
 		Timer timer = new Timer();
+		timerDao.getTimerCache().put("timer", timer);
 		int timeout = 2000;
 		Date date = new Date(System.currentTimeMillis() + timeout);
 		timer.schedule(new TimerTask() {
@@ -291,6 +290,6 @@ public class GameImpl implements IGame {
 				System.out.println("Timeout ecoule");
 	        }
 		}, date);
-		timerDao.getTimerCache().put("timer", timer);
+		
 	}
 }

@@ -4,18 +4,17 @@ public class User implements IQuizzObject {
 	
 	private static final long serialVersionUID = 3884899046258970447L;
 
-	private boolean is_logged;
 	private String mail;
 	private String firstname;
 	private String lastname;
 	private String password;
-	private int score;
-	private int bonus;
+	private int score = 0;
+	private int bonus = 0;
+	private boolean is_logged = false;
+	private int lastAnswer = 0;
 	
 	public User() {
-		this.is_logged = false;
-		this.score = 0;
-		this.bonus = 0;
+		
 	}
 	
 	public boolean isLogged() {
@@ -90,6 +89,14 @@ public class User implements IQuizzObject {
 		if (bonus != 0)
 			return true;
 		return false;
+	}
+	
+	public void setLastAnswer(int lastAnswer) {
+		this.lastAnswer = lastAnswer;
+	}
+
+	public int getLastAnswer() {
+		return lastAnswer;
 	}
 
 	@Override
