@@ -116,7 +116,7 @@ public class RESTController {
 			throw new UnauthorizedException();
 		if (! game.getGameData().isGameFinished())
 			throw new BadRequestException();
-		return game.getRanking(user);
+		return game.getRanking(user, false);
 	}
 	
 	
@@ -130,7 +130,7 @@ public class RESTController {
 		User user = game.getUser(userMail);
 		if (user == null)
 			throw new BadRequestException("Utilisateur inconnu");
-		return game.getRanking(user);
+		return game.getRanking(user, true);
 	}
 
 	

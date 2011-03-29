@@ -56,6 +56,6 @@ public class RESTControllerTest {
 	@ResponseBody
 	public void timer() throws Exception {
 		System.out.println("RESTControllerTest.timer()");
-		game.doTimer();
+		game.testTimer();
 	}
 }

@@ -39,8 +39,6 @@
 	
 	<bean id="answersCache" factory-bean="distributedCacheProvider" factory-method="createAnswersCache" />
 	
-	<bean id="timerCache" factory-bean="distributedCacheProvider" factory-method="createTimerCache" />
-
 	<bean id="longpoll" class="usi.poc.LongPollRestController">
         <property name="game" ref="game" />
     </bean>
@@ -54,7 +52,6 @@
 	<bean id="userDAO" class="${dao.user}" />
 	<bean id="gameDataDAO" class="${dao.gamedata}" />
 	<bean id="answerDAO" class="${dao.answer}" />
-	<bean id="timerDAO" class="${dao.timer}" />
 	
 	<!-- Bypass pour eviter que Spring coupe les URIs avant le caractere "."  -->
 	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">

@@ -12,7 +12,6 @@ import com.gemstone.gemfire.cache.query.IndexExistsException;
 import com.gemstone.gemfire.cache.query.IndexInvalidException;
 import com.gemstone.gemfire.cache.query.IndexNameConflictException;
 import com.gemstone.gemfire.cache.query.IndexType;
-import com.gemstone.gemfire.cache.query.QueryService;
 import com.gemstone.gemfire.cache.query.RegionNotFoundException;
 import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
 
@@ -36,19 +35,14 @@ public class DistributedCacheProvider {
 		try {
 			cache.getQueryService().createIndex("score", IndexType.FUNCTIONAL, "score", "/users");
 		} catch (RegionNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IndexInvalidException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IndexNameConflictException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IndexExistsException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (UnsupportedOperationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		regions.put(name, region);
@@ -77,17 +71,6 @@ public class DistributedCacheProvider {
 		return region;
 	}
 	
-	public <K, V> Region<K, V> createTimerCache() {
-		String name = "timer";
-		if ( regions.containsKey(name) ) {
-			// TODO : throw exception !
-		}
-		Region<K, V> region = cache.<K, V>createRegionFactory(RegionShortcut.REPLICATE)
-		.create(name);
-		regions.put(name, region);
-		return region;
-	}
-
 	@SuppressWarnings("unchecked")
 	public <K, V> Region<K, V> getCache(String name) {
 		return regions.get(name);

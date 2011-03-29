@@ -31,7 +31,12 @@ import usi.poc.business.itf.UserRanking;
 import usi.poc.data.IAnswerDAO;
 import usi.poc.data.IGameDataDAO;
 import usi.poc.data.IUserDAO;
-import usi.poc.data.TimerDAO;
+import usi.poc.timer.DistributedFirstQuestionSender;
+import usi.poc.timer.DistributedLoginTimer;
+
+import com.gemstone.gemfire.cache.Cache;
+import com.gemstone.gemfire.cache.execute.Execution;
+import com.gemstone.gemfire.cache.execute.FunctionService;
 
 public class GameImpl implements IGame {
 
@@ -42,8 +47,15 @@ public class GameImpl implements IGame {
 	}
 	
 	private GameImpl() {
-		
+		FunctionService.registerFunction(distLoginTimer);
+		FunctionService.registerFunction(distFirstQSender);
 	}
+	
+	private DistributedLoginTimer distLoginTimer = new DistributedLoginTimer();
+	private DistributedFirstQuestionSender distFirstQSender = new DistributedFirstQuestionSender();
+	
+	@Resource
+	private Cache cache;
 
 	@Resource
 	private IUserDAO userDao;
@@ -54,11 +66,7 @@ public class GameImpl implements IGame {
 	@Resource	
 	private IAnswerDAO answerDao;
 	
-	@Resource	
-	private TimerDAO timerDao;
-	
 	private static Unmarshaller gameUnmarshaller;
-	
 	static {
 		try {
 			gameUnmarshaller = JAXBContext.newInstance(Sessiontype.class.getPackage().getName()).createUnmarshaller();
@@ -158,8 +166,10 @@ public class GameImpl implements IGame {
 
 	
 	@Override
-	public UserRanking getRanking(User user) {
-		userDao.prepareScoreTable();
+	public UserRanking getRanking(User user, boolean prepareScoreTable) {
+		if (prepareScoreTable)
+			// TODO : attention, on calcule toutes les tables alors que seul l'utilisateur courant nous intéresse...
+			userDao.prepareScoreTable();
 		Collection<User> top = userDao.getHundredBestUsers();
 		Collection<User> before = userDao.getFiftyBeforeUsers(user.getScore());
 		Collection<User> after = userDao.getFiftyAfterUsers(user.getScore());
@@ -210,6 +220,7 @@ public class GameImpl implements IGame {
 
 	@Override
 	public void login(User user) {
+		System.out.println(new Date().toString() + ": login de " + user.getMail());
 		user.setLogged();
 		// TODO : verrou distribué pour éviter de lancer plusieurs minuteurs
 		GameData gameData = gameDataDao.getGame();
@@ -222,17 +233,13 @@ public class GameImpl implements IGame {
 	@Override
 	public void beginLoginTimeout() {
 		System.out.println(new Date().toString() + ": beginLoginTimeout");
+		
 		final GameData gameData = gameDataDao.getGame();
 		gameData.startGame();
-
-		Timer timer = new Timer();
-		int timeout = gameData.getLogintimeout() * 1000;
-		Date date = new Date(System.currentTimeMillis() + timeout);
-		timer.schedule(new TimerTask() {
-			public void run() {
-				QuestionSender.getInstance().send(1);
-	        }
-		}, date);
+		int timeout = gameData.getLogintimeout();
+		
+		Execution execution = FunctionService.onMembers(cache.getDistributedSystem()).withArgs(timeout);
+		execution.execute(distLoginTimer);
 	}
 
 	@Override
@@ -280,16 +287,14 @@ public class GameImpl implements IGame {
 	}
 
 	@Override
-	public void doTimer() {
-		Timer timer = new Timer();
-		timerDao.getTimerCache().put("timer", timer);
-		int timeout = 2000;
-		Date date = new Date(System.currentTimeMillis() + timeout);
-		timer.schedule(new TimerTask() {
-			public void run() {
-				System.out.println("Timeout ecoule");
-	        }
-		}, date);
-		
+	public void testTimer() {
+		Execution execution = FunctionService.onMembers(cache.getDistributedSystem()).withArgs(4);
+		execution.execute(distLoginTimer);
+	}
+
+	@Override
+	public void sendQuestionsToAll() {
+		Execution execution = FunctionService.onMembers(cache.getDistributedSystem());
+		execution.execute(distFirstQSender);
 	}
 }

@@ -32,7 +32,7 @@ public interface IGame {
 	
 	public AnswerFeedback answerQuestion(User user, int n, Answer answer);
 	
-	public UserRanking getRanking(User user);
+	public UserRanking getRanking(User user, boolean prepareScoreTable);
 	
 	public AdminUserAnswers getUserAnswers(User user);
 
@@ -44,5 +44,7 @@ public interface IGame {
 	public void beginQuestionTimeFrame(int n);
 	public void beginSynchroTime(int n);
 
-	public void doTimer();
+	public void testTimer();
+
+	public void sendQuestionsToAll();
 }

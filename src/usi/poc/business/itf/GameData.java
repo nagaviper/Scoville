@@ -16,6 +16,9 @@ public class GameData implements IQuizzObject {
 	private boolean flushusertable;
 	private boolean isGameStarted = false;
 	private boolean isGameFinished = false;
+	
+	// TODO : Puisque toutes les machines ont leur propre minuteur, 
+	// il est inutile de partager ce type de variable globale
 	private int presentQuestionNumber = 0;
 	private int presentAnswerNumber = 0;
 	
