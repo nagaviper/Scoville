@@ -37,8 +37,11 @@ public class QuestionSender {
 				PrintWriter writer = response.getWriter();
 				if (writer != null) {
 					jsonMapper.writeValue(writer, q);
-					//writer.flush();
-					//event.close();
+					// Le navigateur gère plus naturellement :
+					// writer.flush();
+					// event.close();
+					// Mais on se retrouve avec énormément d'exceptions...
+					// Pour la GUI il faudrait faire de l'AJAX, peut-être implémenter Bayeux !?
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
