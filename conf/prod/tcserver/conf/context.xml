@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context cacheMaxSize="10240" cacheTTL="5000" cachingAllowed="true" swallowOutput="false">
+    <!-- Default set of monitored resources -->
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+    <!-- Uncomment this to disable session persistence across Tomcat restarts -->
+    <!--
+    -->
+    <Manager pathname="" />
+            
+    <!-- Uncomment this to enable Comet connection tacking (provides events
+                 on session expiration as well as webapp lifecycle) -->
+    <!--
+            <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
+    -->
+    
+	<!-- 
+	
+    <Manager
+        className="com.gemstone.gemfire.modules.session.catalina.DeltaSessionManager"
+        enableDebugListener="${gemfire-cs.enable.debug.listener}"
+        enableGatewayReplication="${gemfire-cs.enable.gateway.replication}"
+        enableLocalCache="${gemfire-cs.enable.local.cache}"
+        regionAttributesId="${gemfire-cs.region.attributes.id}" regionName="${gemfire-cs.region.name}"/>
+        
+    -->
+        
+</Context>

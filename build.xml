@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="capsaicine" default="help" basedir=".">
+<project name="capsaicine" default="deploy.and.restart.all" basedir=".">
 
-	<!--
-	<property name="tc.server.dir" value="${user.home}/springsource/tc-server-developer-2.1.1.RELEASE"/>
-	<property name="tomcat.server.dir" value="${tc.server.dir}/tomcat-6.0.29.C.RELEASE"/>
-	-->
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+	
+	<property name="node.list" value="vfabric1,vfabric2,vfabric3,vfabric4"/>
 
-	<property name="javac.debug" value="true"/>
+	<property name="javac.debug" value="false"/>
 
 	<property name="tc.server.dir" value="${user.home}/vfabric/tcserver"/>
+	<property name="tc.server.instance" value="tc01"/>
 	<property name="tomcat.server.dir" value="${tc.server.dir}/tomcat-6.0.29.B.RELEASE"/>
-	<property name="tomcat.deploy.dir" value="${tc.server.dir}/servers/tc01/webapps"/>
-	<property name="tomcat.conf.dir" value="${tc.server.dir}/servers/tc01/conf"/>
 
-	<property name="build.dir" value="build"/>
-	<property name="src.dir" value="src"/>
-	<property name="webcontent.dir" value="WebContent"/>
-	<property name="conf.serveur" value="conf"/>
+	<property name="conf.tcserveur" value="conf/prod/tcserver/conf"/>
 		
+	<property name="build.dir" value="build"/>
 	<property name="jar.file.name" value="capsaicine.jar"/>
 	<property name="war.dir" value="${build.dir}"/>
 	<property name="war.file.name" value="capsaicine.war"/>
@@ -48,10 +44,12 @@
 	</target>
 	
 	<target name="build" depends="clean">
-		<echo>Compiling java source files</echo>
-		<javac source="1.6" encoding="utf8" debug="${javac.debug}" srcdir="${src.dir}" destdir="${build.dir}/classes">
+		<echo/>
+		<echo> + Compiling java source files</echo>
+		<echo/>
+		<javac source="1.6" encoding="utf8" debug="${javac.debug}" srcdir="src" destdir="${build.dir}/classes">
 			<classpath>
-				<fileset dir="${webcontent.dir}/WEB-INF/lib">
+				<fileset dir="WebContent/WEB-INF/lib">
 					<include name="*.jar"/>
 				</fileset>
 				<fileset dir="${tomcat.server.dir}/lib">
@@ -62,66 +60,155 @@
 	</target>
 	
 	<target name="package" depends="build">
-		<echo>Creating jar file ${build.dir}/lib/${jar.file.name}</echo>
+		<echo/>
+		<echo> + Creating jar file ${build.dir}/lib/${jar.file.name}</echo>
+		<echo/>
 		<jar destfile="${build.dir}/lib/${jar.file.name}">
 			<fileset dir="${build.dir}/classes"></fileset>
 		</jar>	
-		<echo>Creating war file ${war.file.path}</echo>
+		<echo/>
+		<echo> + Creating war file ${war.file.path}</echo>
+		<echo/>
 		<war destfile="${war.file.path}" needxmlfile="false">
 			<fileset dir="WebContent"/>
 			<lib dir="${build.dir}/lib"/>
 		</war>
 	</target>
 
-	<target name="deploy" depends="package">
-		<ant target="copy.to.remote.server">
-			<property name="hostname" value="vfabric1"/>
-		</ant>
-		<ant target="copy.to.remote.server">
-			<property name="hostname" value="vfabric2"/>
-		</ant>
-		<ant target="copy.to.remote.server">
-			<property name="hostname" value="vfabric3"/>
-		</ant>
-		<ant target="copy.to.remote.server">
-			<property name="hostname" value="vfabric4"/>
-		</ant>
+	<macrodef name="copytcserver">
+		<attribute name="hostname"/>
+		<attribute name="war"/>
+		<attribute name="instance"/>
+		<sequential>
+			<echo> + Copy ${war.file.path} to ${tc.server.dir}/servers/@{instance}/webapps</echo>
+			<exec executable="scp" failonerror="true">
+				<arg value="@{war}"/>
+				<arg value="@{hostname}:${tc.server.dir}/servers/@{instance}/webapps"/>
+			</exec>
+			<echo />
+			<echo> + Copy tcserver configuration file</echo>
+			<echo />
+			<exec executable="scp" failonerror="true">
+				<arg value="-r"/>
+				<arg value="${conf.tcserveur}"/>
+				<arg value="@{hostname}:${tc.server.dir}/servers/@{instance}"/>
+			</exec>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="service">
+		<attribute name="name"/>
+		<attribute name="hostname"/>
+		<attribute name="command"/>
+		<attribute name="action"/>
+		<attribute name="failonerror" default="true"/>
+		<attribute name="sleeptime" default="0"/>
+		<sequential>
+			<echo> + @{action} @{name}</echo>
+			<echo/>
+			<exec executable="ssh" failonerror="false">
+				<arg value="@{hostname}"/>
+				<arg value="@{command}"/>
+				<arg value="@{action}"/>
+			</exec>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="tcserver">
+		<attribute name="hostname"/>
+		<attribute name="instance"/>
+		<attribute name="action"/>
+		<sequential>
+			<service name="tcserver" action="@{action}" failonerror="false"
+				hostname="@{hostname}" command="vfabric-scripts/tcserver-@{instance}.sh" sleeptime="2"/>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="gemfire">
+		<attribute name="hostname"/>
+		<attribute name="instance"/>
+		<attribute name="action"/>
+		<sequential>
+			<service name="gemfire" action="@{action}" failonerror="false"
+				hostname="@{hostname}" command="vfabric-scripts/gemfire-@{instance}.sh" sleeptime="2"/>
+		</sequential>	
+	</macrodef>
+
+	<macrodef name="gemfire-locator">
+		<attribute name="hostname"/>
+		<attribute name="action"/>
+		<sequential>
+			<service name="gemfire-locator" action="@{action}" failonerror="false"
+				hostname="@{hostname}" command="vfabric-scripts/gemfire-locator.sh" sleeptime="2"/>
+		</sequential>	
+	</macrodef>
+
+	<macrodef name="gemfire-jmx">
+		<attribute name="hostname"/>
+		<attribute name="action"/>
+		<sequential>
+			<service name="gemfire-jmx" action="@{action}" failonerror="false"
+				hostname="@{hostname}" command="vfabric-scripts/gemfire-jmx.sh" sleeptime="2"/>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="cleanNetworkDirectory">
+		<attribute name="hostname"/>
+		<attribute name="absolutePath"/>
+		<sequential>
+			<exec executable="ssh" failonerror="true">
+				<arg value="@{hostname}"/>
+				<arg value="rm"/>
+				<arg value="-rf"/>
+				<arg value="@{absolutePath}/*"/>
+			</exec>
+		</sequential>
+	</macrodef>
+	
+	<target name="deploy.and.restart">		
+		<fail unless="hostname" message="hostname is not specified"/>
+		<echo>***************************************************************************</echo>
+		<echo>  Deploy ${tc.server.instance} on ${hostname} </echo>
+		<echo>***************************************************************************</echo>
+		<echo />
+		<echo> + Check tcserver instance ${tc.server.instance} status...</echo>
+		<echo />
+		<exec executable="ssh" failonerror="true" outputproperty="instance.status">
+			<arg value="${hostname}"/>
+			<arg value="/home/user/vfabric-scripts/tcserver-${tc.server.instance}.sh"/>
+			<arg value="printstatus"/>
+		</exec>
+		<if>
+			<equals arg1="${instance.status}" arg2="running" />
+			<then>
+				<echo> instance ${tc.server.instance} is running</echo>
+				<echo />
+				<tcserver hostname="${hostname}" instance="${tc.server.instance}" action="stop"/>
+			</then>
+			<else>
+				<echo> tcserver instance ${tc.server.instance} is not running</echo>
+			</else>
+		</if>
+		<echo />
+		<echo> + Clean ${tc.server.instance} instance</echo>
+		<echo />
+		<cleanNetworkDirectory hostname="${hostname}" absolutepath="${tc.server.dir}/servers/${tc.server.instance}/work"/>
+		<cleanNetworkDirectory hostname="${hostname}" absolutepath="${tc.server.dir}/servers/${tc.server.instance}/conf"/>
+		
+		<!--
+		
+			TODO : archive tomcat logs on stop
+			  
+		<cleanNetworkDirectory hostname="${hostname}" absolutepath="${tc.server.dir}/servers/${tc.server.instance}/logs"/>
+		
+		-->
+		
+		<copytcserver hostname="${hostname}" instance="${tc.server.instance}" war="${war.file.path}"/>
+		<tcserver hostname="${hostname}" instance="${tc.server.instance}" action="start"/>
 	</target>
 
-	<target name="clean.host">
-		<echo>[${hostname}] Delete ${tomcat.deploy.dir}/${war.file.name}</echo>
-		<echo>[${hostname}] Delete ${tomcat.conf.dir}/server.xml</echo>
-		<exec executable="ssh">
-			<arg value="${hostname}"/>
-			<arg value="rm"/>
-			<arg value="-f"/>
-			<arg value="${tomcat.deploy.dir}/${war.file.name}"/>
-			<arg value="${tomcat.conf.dir}/server.xml"/>
-		</exec>	
+	<target name="deploy.and.restart.all" depends="package">		
+		<foreach list="${node.list}" delimiter="," param="hostname" target="deploy.and.restart" />
 	</target>
-	
-	<target name="copy.to.remote.server" if="hostname" depends="clean.host">
-		<echo>[${hostname}] Copy ${war.file.path} to ${tomcat.deploy.dir}</echo>
-		<exec executable="scp">
-			<arg value="${war.file.path}"/>
-			<arg value="${hostname}:${tomcat.deploy.dir}"/>
-		</exec>			
-		<echo>[${hostname}] Copy ${conf.serveur}/server.xml to ${tomcat.conf.dir}</echo>
-		<exec executable="scp">
-			<arg value="${conf.serveur}/server.xml"/>
-			<arg value="${hostname}:${tomcat.conf.dir}"/>
-		</exec>
-	</target>
-	
-	<target name="update">
-		<echo>Update local git repository Scoville</echo>
-		<exec executable="git">
-			<arg value="pull"/>
-		</exec>
-	</target>
-	
-	<target name="update.and.deploy" depends="update, deploy"/>
-	
-	<target name="update.and.package" depends="update, package"/>
-	
+		
 </project>

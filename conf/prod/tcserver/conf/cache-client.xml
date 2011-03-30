@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE client-cache PUBLIC
+  "-//GemStone Systems, Inc.//GemFire Declarative Caching 6.5//EN"
+  "http://www.gemstone.com/dtd/cache6_5.dtd">
+  
+<client-cache>
+
+  <!-- Uncomment the following pool element to modify the default pool server host and port -->
+  <!--
+  <pool name="sessions">
+    <server host="localhost" port="44444"/>
+  </pool>
+  -->
+  <pool name="sessions">
+    <locator host="vfabric1" port="10334"/>
+    <locator host="vfabric2" port="10334"/>
+  </pool>
+  
+</client-cache>
