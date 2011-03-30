@@ -47,6 +47,6 @@ public class ScoreTable {
 	}
 	
 	private static void sort(Collection<User> users) {
-		Collections.sort((List) users, userComparator);
+		Collections.sort((List<User>) users, userComparator);
 	}
 }

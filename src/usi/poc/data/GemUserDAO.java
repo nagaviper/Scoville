@@ -144,4 +144,9 @@ public class GemUserDAO extends AbstractGemDAO implements IUserDAO {
 			e1.printStackTrace();
 		}
 	}
+
+	@Override
+	public void reset() {
+		usersCache.clear();		
+	}
 }

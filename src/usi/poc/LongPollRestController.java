@@ -9,9 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.catalina.CometEvent;
 import org.apache.catalina.CometProcessor;
 
-import com.gemstone.gemfire.cache.execute.Execution;
-import com.gemstone.gemfire.cache.execute.FunctionService;
-
 import usi.SessionUtils;
 import usi.poc.business.impl.GameImpl;
 import usi.poc.business.itf.IGame;
@@ -60,7 +57,7 @@ public class LongPollRestController extends HttpServlet implements CometProcesso
 	        System.out.println("    from " + user.getMail());
 	        
 	        // Mise à jour de la liste des clients
-	        Connexions.getMap().put(user, event);
+	        Connexions.getMap().put(user, event.getHttpServletResponse());
 	        
 	        // Tous les clients ont demandé la première question
 	        if (questionNumber == 1 && game.getGameData().getNbusersthreshold() == Connexions.getMap().size()) {

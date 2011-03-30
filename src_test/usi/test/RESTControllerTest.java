@@ -58,4 +58,12 @@ public class RESTControllerTest {
 		System.out.println("RESTControllerTest.timer()");
 		game.testTimer();
 	}
+	
+	@RequestMapping(value="/test/reset", method=RequestMethod.GET)
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public void reset() throws Exception {
+		System.out.println("RESTControllerTest.reset()");
+		game.reset();
+	}
 }

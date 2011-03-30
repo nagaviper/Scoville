@@ -47,4 +47,6 @@ public interface IGame {
 	public void testTimer();
 
 	public void sendQuestionsToAll();
+
+	public void reset();
 }

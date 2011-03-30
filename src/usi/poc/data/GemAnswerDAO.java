@@ -21,4 +21,9 @@ public class GemAnswerDAO extends AbstractGemDAO implements IAnswerDAO {
 	public void put(String key, UserAnswer obj) {
 		getImpl().put(key, obj);
 	}
+
+	@Override
+	public void reset() {
+		answersCache.clear();		
+	}
 }

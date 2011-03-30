@@ -297,4 +297,11 @@ public class GameImpl implements IGame {
 		Execution execution = FunctionService.onMembers(cache.getDistributedSystem());
 		execution.execute(distFirstQSender);
 	}
+
+	@Override
+	public void reset() {
+		userDao.reset();
+		gameDataDao.reset();
+		answerDao.reset();
+	}
 }

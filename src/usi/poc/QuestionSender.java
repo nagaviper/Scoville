@@ -2,9 +2,10 @@ package usi.poc;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
+import java.util.Map.Entry;
 
-import org.apache.catalina.CometEvent;
+import javax.servlet.http.HttpServletResponse;
+
 import org.codehaus.jackson.map.ObjectMapper;
 
 import usi.poc.business.impl.GameImpl;
@@ -28,18 +29,16 @@ public class QuestionSender {
 
 		// On envoie
 		System.out.println("QuestionSender callback");
-		QuestionTimer.getInstance().cancel();
-		for (Map.Entry<User, CometEvent> entry : Connexions.getMap().entrySet()) {
+		for (Entry<User, HttpServletResponse> entry : Connexions.getMap().entrySet()) {
 			User user = entry.getKey();
 			Question q = GameImpl.getInstance().getQuestion(user, n);
-			CometEvent event = entry.getValue();
+			HttpServletResponse response = entry.getValue();
 			try {
-				PrintWriter writer = event.getHttpServletResponse()
-					.getWriter();
+				PrintWriter writer = response.getWriter();
 				if (writer != null) {
 					jsonMapper.writeValue(writer, q);
-					writer.flush();
-					event.close();
+					//writer.flush();
+					//event.close();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
