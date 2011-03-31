@@ -1,5 +1,7 @@
 package usi.poc.data;
 
+import java.util.Collection;
+
 import usi.poc.business.itf.User;
 
 public interface IUserDAO extends IDAO {
@@ -9,5 +11,10 @@ public interface IUserDAO extends IDAO {
 	void put(String key, User obj);
 	
 	int getScore(User user);
+	
+	void prepareScoreTable();
 
+	Collection<User> getHundredBestUsers();
+	Collection<User> getFiftyBeforeUsers(int score);
+	Collection<User> getFiftyAfterUsers(int score);
 }

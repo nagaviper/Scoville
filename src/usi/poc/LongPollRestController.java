@@ -57,11 +57,13 @@ public class LongPollRestController extends HttpServlet implements CometProcesso
 	        System.out.println("    from " + user.getMail());
 	        
 	        // Mise à jour de la liste des clients
-	        Connexions.getMap().put(user, event);
+	        Connexions.getMap().put(user, event.getHttpServletResponse());
 	        
 	        // Tous les clients ont demandé la première question
-	        if (questionNumber == 1 && game.getGameData().getNbusersthreshold() == Connexions.getMap().size())
-	        	QuestionSender.getInstance().send(1);
+	        if (questionNumber == 1 && game.getGameData().getNbusersthreshold() == Connexions.getMap().size()) {
+	        	// On demande à toutes les machines d'envoyer les questions
+	        	game.sendQuestionsToAll();
+	        }
 		}
 		else if (event.getEventType() == CometEvent.EventType.ERROR)
 			event.close();

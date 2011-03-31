@@ -64,6 +64,12 @@ for i in 1 2 3 4 5 ; do
 	
 done
 
+echo "Waiting questiontimeframe+synchrotime before sending ranking request"
+questiontimeframe=$(grep "questiontimeframe" $GAMEFILEPATH | tr -dc '[0-9]')
+synchrotime=$(grep "synchrotime" $GAMEFILEPATH | tr -dc '[0-9]')
+let sleeptime=$questiontimeframe+$synchrotime
+sleep $sleeptime
+
 echo "Sending ranking request"
 AskRanking $cookie >> $LOG_FILE
 HTTP_CODE=$(cat $LOG_FILE | tail -1)

@@ -111,7 +111,7 @@ POST ()
 # $4 - password
 #
 CreateUser () {
-	POST $CAPSAICINE_URL_BASE/api/user "nocookie" "{ \"firstname\" : \"$1\", \"lastname\" : \"$2\", \"mail\" : \"$3\", \"password\" : \"$4\" }"
+	POST $CAPSAICINE_URL_BASE/api/user "nocookie" "{ \"firstname\" : \"$1\", \"lastname\" : \"$2\", \"mail\" : \"$3\", \"password\" : \"$4\", \"score\" : \"$5\" }"
 }
 
 
@@ -121,7 +121,7 @@ CreateUser () {
 #
 CreateGame () {
 	XML=$(cat $2 | sed -e "s/\"/\\\\\\\\\\\"/g")
-	POST $CAPSAICINE_URL_BASE/api/game/ "nocookie" "{ \"authentication_key\" : \"$1\", \"parameters\" : \"$XML\" }"	
+	POST $CAPSAICINE_URL_BASE/api/game "nocookie" "{ \"authentication_key\" : \"$1\", \"parameters\" : \"$XML\" }"	
 }
 
 

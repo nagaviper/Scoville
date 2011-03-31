@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -18,8 +19,6 @@ import usi.SessionUtils;
 import usi.poc.business.itf.AdminGame;
 import usi.poc.business.itf.AdminUserAnswer;
 import usi.poc.business.itf.AdminUserAnswers;
-import usi.poc.business.itf.AdminUserRanking;
-import usi.poc.business.itf.AdminUserRequest;
 import usi.poc.business.itf.Answer;
 import usi.poc.business.itf.AnswerFeedback;
 import usi.poc.business.itf.IGame;
@@ -115,30 +114,53 @@ public class RESTController {
 		User user = SessionUtils.getLoggedUser(request, game);
 		if (user == null)
 			throw new UnauthorizedException();
-		return game.getRanking(user);
+		if (! game.getGameData().isGameFinished())
+			throw new BadRequestException();
+		return game.getRanking(user, false);
 	}
 	
 	
 	@RequestMapping(value="/score",method=RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
 	@ResponseBody
-	public AdminUserRanking question(AdminUserRequest userRequest) throws Exception {
-		return game.getUserRanking(userRequest);
+	public UserRanking score(@RequestParam(value="user_mail") String userMail,
+			@RequestParam(value="authentication_key") String key) throws Exception {
+		if (! AUTHENTICATION_KEY.equals(key))
+			throw new UnauthorizedException();
+		User user = game.getUser(userMail);
+		if (user == null)
+			throw new BadRequestException("Utilisateur inconnu");
+		return game.getRanking(user, true);
 	}
 
 	
 	@RequestMapping(value="/audit",method=RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
 	@ResponseBody
-	public AdminUserAnswers auditAnswers(AdminUserRequest userRequest) throws Exception {
-		return game.getUserAnswers(userRequest);
+	public AdminUserAnswers auditAnswers(@RequestParam(value="user_mail") String userMail,
+			@RequestParam(value="authentication_key") String key) throws Exception {
+		if (! AUTHENTICATION_KEY.equals(key))
+			throw new UnauthorizedException();
+		User user = game.getUser(userMail);
+		if (user == null)
+			throw new BadRequestException("Utilisateur inconnu");
+		return game.getUserAnswers(user);
 	}
 
 	
 	@RequestMapping(value="/audit/{n}",method=RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
 	@ResponseBody
-	public AdminUserAnswer auditAnswer(AdminUserRequest userRequest, @PathVariable int n) throws Exception {
-		return game.getUserAnswer(userRequest, n);
+	public AdminUserAnswer auditAnswer(@RequestParam(value="user_mail") String userMail,
+			@RequestParam(value="authentication_key") String key,
+			@PathVariable int n) throws Exception {
+		if (! AUTHENTICATION_KEY.equals(key))
+			throw new UnauthorizedException();
+		User user = game.getUser(userMail);
+		if (user == null)
+			throw new BadRequestException("Utilisateur inconnu");
+		if (n < 1 || n > 20)
+			throw new BadRequestException();
+		return game.getUserAnswer(user, n);
 	}
 }

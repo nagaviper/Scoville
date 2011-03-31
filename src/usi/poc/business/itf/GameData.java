@@ -16,6 +16,9 @@ public class GameData implements IQuizzObject {
 	private boolean flushusertable;
 	private boolean isGameStarted = false;
 	private boolean isGameFinished = false;
+	
+	// TODO : Puisque toutes les machines ont leur propre minuteur, 
+	// il est inutile de partager ce type de variable globale
 	private int presentQuestionNumber = 0;
 	private int presentAnswerNumber = 0;
 	
@@ -54,7 +57,7 @@ public class GameData implements IQuizzObject {
 	}
 
 	public Question getQuestion(int i) {
-		return question[i];
+		return question[i - 1];
 	}
 	
 	public Question[] getQuestion() {
@@ -62,7 +65,7 @@ public class GameData implements IQuizzObject {
 	}
 	
 	public int getGoodChoice(int i) {
-		return goodChoice[i];
+		return goodChoice[i - 1];
 	}
 
 	public int getLogintimeout() {

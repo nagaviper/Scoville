@@ -2,14 +2,14 @@ package usi.poc;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.catalina.CometEvent;
+import javax.servlet.http.HttpServletResponse;
 
 import usi.poc.business.itf.User;
 
 public class Connexions {
-	private static ConcurrentHashMap<User, CometEvent> map = new ConcurrentHashMap<User, CometEvent>();
+	private static ConcurrentHashMap<User, HttpServletResponse> map = new ConcurrentHashMap<User, HttpServletResponse>();
 
-	public static ConcurrentHashMap<User, CometEvent> getMap() {
+	public static ConcurrentHashMap<User, HttpServletResponse> getMap() {
 		return map;
 	}
 }

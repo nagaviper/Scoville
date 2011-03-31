@@ -31,15 +31,14 @@
 	
 	<bean id="usersCacheListener" class="usi.poc.data.UsersCacheListener" />
 
-	<bean id="usersCache" factory-bean="distributedCacheProvider" factory-method="createReplicatedCache">
-		<constructor-arg index="0" value="users" />
-		<constructor-arg index="1" ref="usersCacheListener" />
+	<bean id="usersCache" factory-bean="distributedCacheProvider" factory-method="createUserCache">
+		<constructor-arg index="0" ref="usersCacheListener" />
 	</bean>
 	
-	<bean id="gameCache" factory-bean="distributedCacheProvider" factory-method="createReplicatedCache">
-		<constructor-arg index="0" value="game" />
-	</bean>
-
+	<bean id="gameCache" factory-bean="distributedCacheProvider" factory-method="createGameCache" />
+	
+	<bean id="answersCache" factory-bean="distributedCacheProvider" factory-method="createAnswersCache" />
+	
 	<bean id="longpoll" class="usi.poc.LongPollRestController">
         <property name="game" ref="game" />
     </bean>
@@ -52,4 +51,11 @@
 	
 	<bean id="userDAO" class="${dao.user}" />
 	<bean id="gameDataDAO" class="${dao.gamedata}" />
+	<bean id="answerDAO" class="${dao.answer}" />
+	
+	<!-- Bypass pour eviter que Spring coupe les URIs avant le caractere "."  -->
+	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+    	<property name="useDefaultSuffixPattern" value="false" />
+	</bean>
+	
 </beans>

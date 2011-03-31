@@ -1,6 +1,7 @@
 package usi.poc.business.impl;
 
 import java.io.StringReader;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -14,22 +15,28 @@ import javax.xml.bind.Unmarshaller;
 
 import usi.poc.QuestionSender;
 import usi.poc.ScoreCalculator;
+import usi.poc.UserRankingListBuilder;
 import usi.poc.business.impl.game.mapping.Parametertype;
 import usi.poc.business.impl.game.mapping.Sessiontype;
 import usi.poc.business.itf.AdminUserAnswer;
 import usi.poc.business.itf.AdminUserAnswers;
-import usi.poc.business.itf.AdminUserRanking;
-import usi.poc.business.itf.AdminUserRequest;
 import usi.poc.business.itf.Answer;
 import usi.poc.business.itf.AnswerFeedback;
 import usi.poc.business.itf.GameData;
 import usi.poc.business.itf.IGame;
 import usi.poc.business.itf.Question;
 import usi.poc.business.itf.User;
+import usi.poc.business.itf.UserAnswer;
 import usi.poc.business.itf.UserRanking;
-import usi.poc.business.itf.UserRankingList;
+import usi.poc.data.IAnswerDAO;
 import usi.poc.data.IGameDataDAO;
 import usi.poc.data.IUserDAO;
+import usi.poc.timer.DistributedFirstQuestionSender;
+import usi.poc.timer.DistributedLoginTimer;
+
+import com.gemstone.gemfire.cache.Cache;
+import com.gemstone.gemfire.cache.execute.Execution;
+import com.gemstone.gemfire.cache.execute.FunctionService;
 
 public class GameImpl implements IGame {
 
@@ -40,9 +47,15 @@ public class GameImpl implements IGame {
 	}
 	
 	private GameImpl() {
-		
+		FunctionService.registerFunction(distLoginTimer);
+		FunctionService.registerFunction(distFirstQSender);
 	}
-
+	
+	private DistributedLoginTimer distLoginTimer = new DistributedLoginTimer();
+	private DistributedFirstQuestionSender distFirstQSender = new DistributedFirstQuestionSender();
+	
+	@Resource
+	private Cache cache;
 
 	@Resource
 	private IUserDAO userDao;
@@ -50,8 +63,10 @@ public class GameImpl implements IGame {
 	@Resource	
 	private IGameDataDAO gameDataDao;
 	
-	private static Unmarshaller gameUnmarshaller;
+	@Resource	
+	private IAnswerDAO answerDao;
 	
+	private static Unmarshaller gameUnmarshaller;
 	static {
 		try {
 			gameUnmarshaller = JAXBContext.newInstance(Sessiontype.class.getPackage().getName()).createUnmarshaller();
@@ -137,55 +152,75 @@ public class GameImpl implements IGame {
 		else {
 			int userChoice = answer.getAnswer();
 			good = (userChoice == goodChoice);
+			
+			// Persistance de la réponse seulement si elle est valide
+			answerDao.put(user.getMail() + n, new UserAnswer(user.getMail(), n, userChoice));
 		}
 		ScoreCalculator.calculate(user, n, good);
+		user.setLastAnswer(n);
+
+		System.out.println("Nouveau score de " + user.getMail() + " : " + user.getScore());
 		String goodAnswer = gameDataDao.getGame().getQuestion(n).getAnswer(goodChoice);
 		return new AnswerFeedback(good, goodAnswer, user.getScore());
 	}
 
 	
 	@Override
-	public UserRanking getRanking(User user) {
-		System.out.println("GameImpl.getRanking()");
-		System.out.println("Not yet implemented...");
-
-		// TODO : vérifier gameData.isGameFinished()
+	public UserRanking getRanking(User user, boolean prepareScoreTable) {
+		if (prepareScoreTable)
+			// TODO : attention, on calcule toutes les tables alors que seul l'utilisateur courant nous intéresse...
+			userDao.prepareScoreTable();
+		Collection<User> top = userDao.getHundredBestUsers();
+		Collection<User> before = userDao.getFiftyBeforeUsers(user.getScore());
+		Collection<User> after = userDao.getFiftyAfterUsers(user.getScore());
+		
 		UserRanking r = new UserRanking();
-		r.setScore(12);
-		r.setTop_scores(new UserRankingList());
-		r.getTop_scores().setMail(new String [] { "az", "er" , "ty" });
-		r.getTop_scores().setScores(new int [] { 21, 13, 32, 12, 4 });
-		r.setBefore(new UserRankingList());
-		r.getBefore().setMail(new String [] { "wx", "cv" , "bn" });
+		r.setScore(user.getScore());
+		r.setTop_scores(UserRankingListBuilder.build(top));
+		r.setBefore(UserRankingListBuilder.build(before));
+		r.setAfter(UserRankingListBuilder.build(after));
 		return r;
 	}
 
 	
 	@Override
-	public AdminUserRanking getUserRanking(AdminUserRequest request) {
-		System.out.println("GameImpl.getUserRanking()");
-		System.out.println("Not yet implemented...");
-		return new AdminUserRanking();
+	public AdminUserAnswers getUserAnswers(User user) {
+		int [] user_answers = new int[20];
+		int [] good_answers = new int[20];
+
+		String mail = user.getMail();
+		for (int n = 1; n <= 20; n++) {
+			UserAnswer userAnswer = (UserAnswer) answerDao.get(mail + n);
+			if (userAnswer == null)
+				user_answers[n - 1] = 0;
+			else
+				user_answers[n - 1] = userAnswer.getAnswer();
+			good_answers[n - 1] = gameDataDao.getGame().getGoodChoice(n);
+		}
+		return new AdminUserAnswers(user_answers, good_answers);
 	}
 
-	
-	@Override
-	public AdminUserAnswers getUserAnswers(AdminUserRequest request) {
-		System.out.println("GameImpl.getUserAnswers()");
-		System.out.println("Not yet implemented...");
-		return new AdminUserAnswers();
-	}
 
-	
 	@Override
-	public AdminUserAnswer getUserAnswer(AdminUserRequest request, int n) {
-		System.out.println("GameImpl.getUserAnswer()");
-		System.out.println("Not yet implemented...");
-		return new AdminUserAnswer();
+	public AdminUserAnswer getUserAnswer(User user, int n) {
+		// L'utilisateur a ou pas bien répondu à cette question, et dans la fenêtre temporelle autorisée
+		UserAnswer userAnswer = (UserAnswer) answerDao.get(user.getMail() + n);
+		int user_answer;
+		if (userAnswer == null)
+			user_answer = 0;
+		else
+			user_answer = userAnswer.getAnswer();
+
+		// Question posée et réponse attendue
+		Question question = gameDataDao.getGame().getQuestion(n);
+		int goodChoice = gameDataDao.getGame().getGoodChoice(n);
+		
+		return new AdminUserAnswer(user_answer, goodChoice, question.getQuestion());
 	}
 
 	@Override
 	public void login(User user) {
+		System.out.println(new Date().toString() + ": login de " + user.getMail());
 		user.setLogged();
 		// TODO : verrou distribué pour éviter de lancer plusieurs minuteurs
 		GameData gameData = gameDataDao.getGame();
@@ -198,17 +233,13 @@ public class GameImpl implements IGame {
 	@Override
 	public void beginLoginTimeout() {
 		System.out.println(new Date().toString() + ": beginLoginTimeout");
+		
 		final GameData gameData = gameDataDao.getGame();
 		gameData.startGame();
-
-		Timer timer = new Timer();
-		int timeout = gameData.getLogintimeout() * 1000;
-		Date date = new Date(System.currentTimeMillis() + timeout);
-		timer.schedule(new TimerTask() {
-			public void run() {
-				QuestionSender.getInstance().send(1);
-	        }
-		}, date);
+		int timeout = gameData.getLogintimeout();
+		
+		Execution execution = FunctionService.onMembers(cache.getDistributedSystem()).withArgs(timeout);
+		execution.execute(distLoginTimer);
 	}
 
 	@Override
@@ -237,6 +268,8 @@ public class GameImpl implements IGame {
 		System.out.println(new Date().toString() + ": beginSynchroTime for question " + n);
 		final GameData gameData = gameDataDao.getGame();
 		gameData.setPresentAnswerNumber(0);
+		if (n  > gameData.getNbquestions())
+			userDao.prepareScoreTable();
 
 		Timer timer = new Timer();
 		int timeout = gameData.getQuestiontimeframe() * 1000;
@@ -251,5 +284,24 @@ public class GameImpl implements IGame {
 					QuestionSender.getInstance().send(n);
 	        }
 		}, date);
+	}
+
+	@Override
+	public void testTimer() {
+		Execution execution = FunctionService.onMembers(cache.getDistributedSystem()).withArgs(4);
+		execution.execute(distLoginTimer);
+	}
+
+	@Override
+	public void sendQuestionsToAll() {
+		Execution execution = FunctionService.onMembers(cache.getDistributedSystem());
+		execution.execute(distFirstQSender);
+	}
+
+	@Override
+	public void reset() {
+		userDao.reset();
+		gameDataDao.reset();
+		answerDao.reset();
 	}
 }

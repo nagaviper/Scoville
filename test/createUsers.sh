@@ -24,8 +24,8 @@ fi
 NB_CREATED=0
 NB_ERROR=0
 
-while IFS=, read firstname lastname email password ; do
-	CreateUser $firstname $lastname $email $password > $UNIT_LOG_FILE
+while IFS=, read firstname lastname email password score ; do
+	CreateUser $firstname $lastname $email $password $score > $UNIT_LOG_FILE
 	if [ -n $DEBUG ] ; then
 		cat $UNIT_LOG_FILE >> $LOG_FILE
 	fi
